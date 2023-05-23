@@ -4,6 +4,16 @@ import {BoardGUI} from "./class_Board.mjs"
 var com = com || {};
 
 com.init = function (stype) {
+	com.nowStype = stype || com.getCookie("stype") || "stype1";
+	var stype = com.stype[com.nowStype];
+	com.width = stype.width;
+	com.height = stype.height;
+	com.spaceX = stype.spaceX;
+	com.spaceY = stype.spaceY;
+	com.pointStartX = stype.pointStartX;
+	com.pointStartY = stype.pointStartY;
+	com.page = stype.page;
+	
 	com.get("box").style.width = com.width + 1 + "px";
 
 	com.canvas = document.getElementById("chess");
