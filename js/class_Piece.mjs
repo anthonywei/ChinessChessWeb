@@ -1,4 +1,35 @@
 // ------------------ Piece ----------------------------
+const PROPERTIES = {
+    red: {
+        Xe: { text: "俥", imgStr: 'r_c' },
+        Ma: { text: "傌", imgStr: 'r_m' },
+        Vua: { text: "帥", imgStr: 'r_x' },
+        Si: { text: "仕", imgStr: 'r_s' },
+        Tuong: { text: "相", imgStr: 'r_j' },
+        Phao: { text: "炮", imgStr: 'r_p' },
+        Tot: { text: "兵", imgStr: 'r_z' }
+    },
+    black: {
+        Xe: { text: "車", imgStr: 'r_c' },
+        Ma: { text: "馬", imgStr: 'r_m' },
+        Vua: { text: "將", imgStr: 'r_x' },
+        Si: { text: "士", imgStr: 'r_s' },
+        Tuong: { text: "象", imgStr: 'r_j' },
+        Phao: { text: "砲", imgStr: 'r_p' },
+        Tot: { text: "卒", imgStr: 'r_z' }
+    }
+}
+const VALUE = {
+    Xe: 100,
+    Ma: 45,
+    Vua: 9999,
+    Si: 20,
+    Tuong: 25,
+    Phao: 50,
+    Tot: 10
+}
+let POSITION_VALUES = {}
+
 function parseSide(side) {
     let scale = 0;
     if (typeof side === "boolean") {
@@ -17,35 +48,6 @@ function parseSide(side) {
     return scale;
 }
 
-Piece.properties = {
-    red: {
-        Xe: { text: "俥", img: 'r_c' },
-        Ma: { text: "傌", img: 'r_m' },
-        Vua: { text: "帥", img: 'r_x' },
-        Si: { text: "仕", img: 'r_s' },
-        Tuong: { text: "相", img: 'r_j' },
-        Phao: { text: "炮", img: 'r_p' },
-        Tot: { text: "兵", img: 'r_z' }
-    },
-    black: {
-        Xe: { text: "車", img: 'r_c' },
-        Ma: { text: "馬", img: 'r_m' },
-        Vua: { text: "將", img: 'r_x' },
-        Si: { text: "士", img: 'r_s' },
-        Tuong: { text: "象", img: 'r_j' },
-        Phao: { text: "砲", img: 'r_p' },
-        Tot: { text: "卒", img: 'r_z' }
-    }
-}
-Piece.value = {
-    Xe: 100,
-    Ma: 45,
-    Vua: 9999,
-    Si: 20,
-    Tuong: 25,
-    Phao: 50,
-    Tot: 10
-}
 export class Piece {
     constructor(scale, position, baseValue) {
         this.scale = scale;
@@ -60,51 +62,64 @@ export class Piece {
     getPositionValue() {
         return 0;
     }
+
+    show(canvas2dcontext) {
+        canvas2dcontext.save();
+        canvas2dcontext.globalAlpha = 1;
+        canvas2dcontext.drawImage(this.getImg(), 35 * this.position[0] + 5, 36 * this.position[1] + 19);
+        canvas2dcontext.restore();
+    }
+
+    getImg() {
+        let out = new Image();
+        out.src = "/img/stype_1/" + this.imgStr + ".png";
+        return out;
+    }
 }
 
-Xe.positionValue = [
+POSITION_VALUES.Xe = [
+    [3, 3, 3, 3, 4, 4, 2, -1, 0, -3],
+    [4, 6, 4, 6, 5, 6, 4, 4, 4, 3],
+    [3, 4, 3, 6, 5, 6, 2, 2, 3, 2],
+    [6, 8, 7, 8, 7, 7, 6, 6, 6, 6],
+    [7, 16, 8, 8, 7, 7, 7, 6, 0, 0],
+    [6, 8, 7, 8, 7, 7, 6, 6, 6, 6],
+    [3, 4, 3, 6, 5, 6, 2, 2, 3, 2],
+    [4, 6, 4, 6, 5, 6, 4, 4, 4, 3],
     [3, 3, 3, 3, 4, 4, 2, -1, 0, -3]
-    [4, 6, 4, 6, 5, 6, 4, 4, 4, 3]
-    [3, 4, 3, 6, 5, 6, 2, 2, 3, 2]
-    [6, 8, 7, 8, 7, 7, 6, 6, 6, 6]
-    [7, 16, 8, 8, 7, 7, 7, 6, 0, 0]
-    [6, 8, 7, 8, 7, 7, 6, 6, 6, 6]
-    [3, 4, 3, 6, 5, 6, 2, 2, 3, 2]
-    [4, 6, 4, 6, 5, 6, 4, 4, 4, 3]
-    [3, 3, 3, 3, 4, 4, 2, -1, 0, -3]
-]
+];
 export class Xe extends Piece {
     constructor(side, position) {
         let scale = parseSide(side);
-        super(scale, position, Piece.value.Xe);
+        super(scale, position, VALUE.Xe);
 
         if (scale == 1) {
-            let properties = Piece.properties.red.Xe;
+            var properties = PROPERTIES.red.Xe;
         } else {
-            let properties = Piece.properties.black.Xe;
+            var properties = PROPERTIES.black.Xe;
         }
         this.text = properties.text;
-        this.img = properties.img;
+        this.imgStr = properties.imgStr;
     }
 
     getPositionValue() {
         let [x, y] = this.position;
-        return Xe.positionValue[x][y];
+        return POSITION_VALUES.Xe[x][y];
     }
 }
 
 export class Ma extends Piece {
     constructor(side, position) {
         let scale = parseSide(side);
-        super(scale, position, Piece.value.Ma);
+        super(scale, position, VALUE.Ma);
 
         if (scale == 1) {
-            let properties = Piece.properties.red.Ma;
+            var properties = PROPERTIES.red.Ma;
         } else {
-            let properties = Piece.properties.black.Ma;
+            var properties = PROPERTIES.black.Ma;
         }
         this.text = properties.text;
-        this.img = properties.img;
+        this.imgStr = properties.imgStr;
     }
 
     getPositionValue() {
@@ -116,30 +131,30 @@ export class Ma extends Piece {
 export class Vua extends Piece {
     constructor(side, position) {
         let scale = parseSide(side);
-        super(scale, position, Piece.value.Vua);
+        super(scale, position, VALUE.Vua);
 
         if (scale == 1) {
-            let properties = Piece.properties.red.Vua;
+            var properties = PROPERTIES.red.Vua;
         } else {
-            let properties = Piece.properties.black.Vua;
+            var properties = PROPERTIES.black.Vua;
         }
         this.text = properties.text;
-        this.img = properties.img;
+        this.imgStr = properties.imgStr;
     }
 }
 
 export class Si extends Piece {
     constructor(side, position) {
         let scale = parseSide(side);
-        super(scale, position, Piece.value.Si);
+        super(scale, position, VALUE.Si);
 
         if (scale == 1) {
-            let properties = Piece.properties.red.Si;
+            var properties = PROPERTIES.red.Si;
         } else {
-            let properties = Piece.properties.black.Si;
+            var properties = PROPERTIES.black.Si;
         }
         this.text = properties.text;
-        this.img = properties.img;
+        this.imgStr = properties.imgStr;
     }
 
     getPositionValue() {
@@ -151,15 +166,15 @@ export class Si extends Piece {
 export class Tuong extends Piece {
     constructor(side, position) {
         let scale = parseSide(side);
-        super(scale, position, Piece.value.Tuong);
+        super(scale, position, VALUE.Tuong);
 
         if (scale == 1) {
-            let properties = Piece.properties.red.Tuong;
+            var properties = PROPERTIES.red.Tuong;
         } else {
-            let properties = Piece.properties.black.Tuong;
+            var properties = PROPERTIES.black.Tuong;
         }
         this.text = properties.text;
-        this.img = properties.img;
+        this.imgStr = properties.imgStr;
     }
 
     getPositionValue() {
@@ -171,15 +186,15 @@ export class Tuong extends Piece {
 export class Phao extends Piece {
     constructor(side, position) {
         let scale = parseSide(side);
-        super(scale, position, Piece.value.Phao);
+        super(scale, position, VALUE.Phao);
 
         if (scale == 1) {
-            let properties = Piece.properties.red.Phao;
+            var properties = PROPERTIES.red.Phao;
         } else {
-            let properties = Piece.properties.black.Phao;
+            var properties = PROPERTIES.black.Phao;
         }
         this.text = properties.text;
-        this.img = properties.img;
+        this.imgStr = properties.imgStr;
     }
 
     getPositionValue() {
@@ -191,15 +206,15 @@ export class Phao extends Piece {
 export class Tot extends Piece {
     constructor(side, position) {
         let scale = parseSide(side);
-        super(scale, position, Piece.value.Tot);
+        super(scale, position, VALUE.Tot);
 
         if (scale == 1) {
-            let properties = Piece.properties.red.Tot;
+            var properties = PROPERTIES.red.Tot;
         } else {
-            let properties = Piece.properties.black.Tot;
+            var properties = PROPERTIES.black.Tot;
         }
         this.text = properties.text;
-        this.img = properties.img;
+        this.imgStr = properties.imgStr;
     }
 
     getPositionValue() {
