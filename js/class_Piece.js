@@ -17,22 +17,6 @@ function parseSide(side) {
     return scale;
 }
 
-class Piece {
-    constructor(scale, position, baseValue) {
-        this.scale = scale;
-        this.position = position;
-        this.baseValue = baseValue;
-    }
-
-    getCurrentValue() {
-        return this.scale * (this.baseValue + this.getPositionValue());
-    }
-
-    getPositionValue() {
-        return 0;
-    }
-}
-
 Piece.properties = {
     red: {
         Xe: { text: "俥", img: 'r_c' },
@@ -62,8 +46,34 @@ Piece.value = {
     Phao: 50,
     Tot: 10
 }
+export class Piece {
+    constructor(scale, position, baseValue) {
+        this.scale = scale;
+        this.position = position;
+        this.baseValue = baseValue;
+    }
 
-class Xe extends Piece {
+    getCurrentValue() {
+        return this.scale * (this.baseValue + this.getPositionValue());
+    }
+
+    getPositionValue() {
+        return 0;
+    }
+}
+
+Xe.positionValue = [
+    [3, 3, 3, 3, 4, 4, 2, -1, 0, -3]
+    [4, 6, 4, 6, 5, 6, 4, 4, 4, 3]
+    [3, 4, 3, 6, 5, 6, 2, 2, 3, 2]
+    [6, 8, 7, 8, 7, 7, 6, 6, 6, 6]
+    [7, 16, 8, 8, 7, 7, 7, 6, 0, 0]
+    [6, 8, 7, 8, 7, 7, 6, 6, 6, 6]
+    [3, 4, 3, 6, 5, 6, 2, 2, 3, 2]
+    [4, 6, 4, 6, 5, 6, 4, 4, 4, 3]
+    [3, 3, 3, 3, 4, 4, 2, -1, 0, -3]
+]
+export class Xe extends Piece {
     constructor(side, position) {
         let scale = parseSide(side);
         super(scale, position, Piece.value.Xe);
@@ -82,19 +92,8 @@ class Xe extends Piece {
         return Xe.positionValue[x][y];
     }
 }
-Xe.positionValue = [
-    [3, 3, 3, 3, 4, 4, 2, -1, 0, -3]
-    [4, 6, 4, 6, 5, 6, 4, 4, 4, 3]
-    [3, 4, 3, 6, 5, 6, 2, 2, 3, 2]
-    [6, 8, 7, 8, 7, 7, 6, 6, 6, 6]
-    [7, 16, 8, 8, 7, 7, 7, 6, 0, 0]
-    [6, 8, 7, 8, 7, 7, 6, 6, 6, 6]
-    [3, 4, 3, 6, 5, 6, 2, 2, 3, 2]
-    [4, 6, 4, 6, 5, 6, 4, 4, 4, 3]
-    [3, 3, 3, 3, 4, 4, 2, -1, 0, -3]
-]
 
-class Ma extends Piece {
+export class Ma extends Piece {
     constructor(side, position) {
         let scale = parseSide(side);
         super(scale, position, Piece.value.Ma);
@@ -114,7 +113,7 @@ class Ma extends Piece {
     }
 }
 
-class Vua extends Piece {
+export class Vua extends Piece {
     constructor(side, position) {
         let scale = parseSide(side);
         super(scale, position, Piece.value.Vua);
@@ -129,7 +128,7 @@ class Vua extends Piece {
     }
 }
 
-class Si extends Piece {
+export class Si extends Piece {
     constructor(side, position) {
         let scale = parseSide(side);
         super(scale, position, Piece.value.Si);
@@ -149,7 +148,7 @@ class Si extends Piece {
     }
 }
 
-class Tuong extends Piece {
+export class Tuong extends Piece {
     constructor(side, position) {
         let scale = parseSide(side);
         super(scale, position, Piece.value.Tuong);
@@ -169,7 +168,7 @@ class Tuong extends Piece {
     }
 }
 
-class Phao extends Piece {
+export class Phao extends Piece {
     constructor(side, position) {
         let scale = parseSide(side);
         super(scale, position, Piece.value.Phao);
@@ -189,7 +188,7 @@ class Phao extends Piece {
     }
 }
 
-class Tot extends Piece {
+export class Tot extends Piece {
     constructor(side, position) {
         let scale = parseSide(side);
         super(scale, position, Piece.value.Tot);
@@ -206,87 +205,5 @@ class Tot extends Piece {
     getPositionValue() {
         let [x, y] = this.position;
         return Tot.positionValue[x][y];
-    }
-}
-
-
-// ------------------ Board ----------------------------
-Board.defaultPosition = [
-    ["C1", null, null, "Z4", null, null, "z4", null, null, "c1",],
-    ["M1", null, "P1", null, null, null, null, "p1", null, "m1",],
-    ["X1", null, null, "Z3", null, null, "z3", null, null, "x1",],
-    ["S1", null, null, null, null, null, null, null, null, "s1",],
-    ["J0", null, null, "Z2", null, null, "z2", null, null, "j0",],
-    ["S0", null, null, null, null, null, null, null, null, "s0",],
-    ["X0", null, null, "Z1", null, null, "z1", null, null, "x0",],
-    ["M0", null, "P0", null, null, null, null, "p0", null, "m0",],
-    ["C0", null, null, "Z0", null, null, "z0", null, null, "c0",]
-];
-class Board {
-    constructor(startPositions) {
-        startPositions = startPositions || Board.defaultPosition;
-        // 2D of pieces
-        this.piecePositions = [];
-        for (var i = 0; i < startPositions.length; i++) {
-            // create current column and put to 2D array
-            let colPieces = [];
-            this.piecePositions.push(colPieces);
-            for (var j = 0; j < startPositions[i].length; j++) {
-                // check if null
-                if (startPositions[i][j] === null) {
-                    colPieces.push(null)
-                    continue;
-                };
-                // get identifier
-                const pieceChar = startPositions[i][j].toString().charAt(0);
-                switch (pieceChar) {
-                    case "C":
-                        thisPiece = new Xe(true, [i, j]);
-                        break;
-                    case "M":
-                        thisPiece = new Ma(true, [i, j]);
-                        break;
-                    case "X":
-                        thisPiece = new Vua(true, [i, j]);
-                        break;
-                    case "S":
-                        thisPiece = new Si(true, [i, j]);
-                        break;
-                    case "J":
-                        thisPiece = new Tuong(true, [i, j]);
-                        break;
-                    case "P":
-                        thisPiece = new Phao(true, [i, j]);
-                        break;
-                    case "Z":
-                        thisPiece = new Tot(true, [i, j]);
-                        break;
-                    case "c":
-                        thisPiece = new Xe(false, [i, j]);
-                        break;
-                    case "m":
-                        thisPiece = new Ma(false, [i, j]);
-                        break;
-                    case "x":
-                        thisPiece = new Vua(false, [i, j]);
-                        break;
-                    case "s":
-                        thisPiece = new Si(false, [i, j]);
-                        break;
-                    case "j":
-                        thisPiece = new Tuong(false, [i, j]);
-                        break;
-                    case "p":
-                        thisPiece = new Phao(false, [i, j]);
-                        break;
-                    case "z":
-                        thisPiece = new Tot(false, [i, j]);
-                        break;
-                    default:
-                        throw new Error("This piece is not available");
-                }
-                colPieces.push(thisPiece);
-            }
-        }
     }
 }
