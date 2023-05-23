@@ -1,17 +1,9 @@
+import {BoardGUI} from "./class_Board.mjs"
+
 // setup environment 
 var com = com || {};
 
 com.init = function (stype) {
-	com.nowStype = stype || com.getCookie("stype") || "stype1";
-	var stype = com.stype[com.nowStype];
-	com.width = stype.width;
-	com.height = stype.height;
-	com.spaceX = stype.spaceX;
-	com.spaceY = stype.spaceY;
-	com.pointStartX = stype.pointStartX;
-	com.pointStartY = stype.pointStartY;
-	com.page = stype.page;
-
 	com.get("box").style.width = com.width + 1 + "px";
 
 	com.canvas = document.getElementById("chess");
@@ -20,9 +12,13 @@ com.init = function (stype) {
 	com.canvas.width = com.width;
 	com.canvas.height = com.height;
 
-	com.childList = com.childList || [];
+	com.board = new BoardGUI(null, com.ct);
+	com.loadWoodenBg(com.page);
 
-	com.loadImages(com.page);
+	com.bg = com.board.bg;
+	com.dot = com.board.dot;
+	com.pane = com.board.pane;
+	com.pane.isShow = false;
 
 }
 
@@ -53,14 +49,6 @@ com.get = function (id) {
 }
 
 window.onload = function () {
-	com.bg = new com.class.Bg();
-	com.dot = new com.class.Dot();
-	com.pane = new com.class.Pane();
-	com.pane.isShow = false;
-
-	com.childList = [com.bg, com.dot, com.pane];
-	com.mans = {};
-	com.createMans(com.initMap)
 	com.bg.show();
 	com.get("bnBox").style.display = "block";
 
@@ -122,37 +110,9 @@ window.onload = function () {
 }
 
 
-com.loadImages = function (stype) {
-	// chess board
-	com.bgImg = new Image();
-	com.bgImg.src = "img/" + stype + "/bg.png";
-
-	// dot for available moves for a piece
-	com.dotImg = new Image();
-	com.dotImg.src = "img/" + stype + "/dot.png";
-
-	// add image in pieces' properties 
-	for (var i in com.args) {
-		com[i] = {};
-		com[i].img = new Image();
-		com[i].img.src = "img/" + stype + "/" + com.args[i].img + ".png";
-	}
-
-	// marker for previous moves
-	com.paneImg = new Image();
-	com.paneImg.src = "img/" + stype + "/r_box.png";
-
+com.loadWoodenBg = function (stype) {
 	// put wood background for body
 	document.getElementsByTagName("body")[0].style.background = "url(img/" + stype + "/bg.jpg)";
-
-}
-
-// show all piece on board 
-com.show = function () {
-	com.ct.clearRect(0, 0, com.width, com.height);
-	for (var i = 0; i < com.childList.length; i++) {
-		com.childList[i].show();
-	}
 }
 
 
@@ -164,36 +124,6 @@ com.showPane = function (x, y, newX, newY) {
 	com.pane.newY = newY;
 }
 
-
-com.createMans = function (map) {
-	// create chess board with 2d pieceStrs input 
-	for (var i = 0; i < map.length; i++) {
-		for (var n = 0; n < map[i].length; n++) {
-			var key = map[i][n];
-			if (key) {
-				com.mans[key] = new com.class.Man(key);
-				com.mans[key].x = n;
-				com.mans[key].y = i;
-				com.childList.push(com.mans[key])
-			}
-		}
-	}
-}
-
-
-// not used here 
-com.alert = function (obj, f, n) {
-	if (typeof obj !== "object") {
-		try { console.log(obj) } catch (e) { }
-
-	}
-	var arr = [];
-	for (var i in obj) arr.push(i + " = " + obj[i]);
-	try { console.log(arr.join(n || "\n")) } catch (e) { }
-
-}
-
-var z = com.alert;
 
 // not used here: play.js
 // take the canvas and return its position 
