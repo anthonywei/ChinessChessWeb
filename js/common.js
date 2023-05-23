@@ -1,7 +1,7 @@
+// setup environment 
 var com = com || {};
 
 com.init = function (stype) {
-
 	com.nowStype = stype || com.getCookie("stype") || "stype1";
 	var stype = com.stype[com.nowStype];
 	com.width = stype.width;
@@ -15,6 +15,7 @@ com.init = function (stype) {
 	com.get("box").style.width = com.width + 1 + "px";
 
 	com.canvas = document.getElementById("chess");
+	// ct : 2d object with support functions
 	com.ct = com.canvas.getContext("2d");
 	com.canvas.width = com.width;
 	com.canvas.height = com.height;
@@ -122,27 +123,31 @@ window.onload = function () {
 
 
 com.loadImages = function (stype) {
+	// chess board
 	com.bgImg = new Image();
 	com.bgImg.src = "img/" + stype + "/bg.png";
 
+	// dot for available moves for a piece
 	com.dotImg = new Image();
 	com.dotImg.src = "img/" + stype + "/dot.png";
 
+	// add image in pieces' properties 
 	for (var i in com.args) {
 		com[i] = {};
 		com[i].img = new Image();
 		com[i].img.src = "img/" + stype + "/" + com.args[i].img + ".png";
 	}
 
-
+	// marker for previous moves
 	com.paneImg = new Image();
 	com.paneImg.src = "img/" + stype + "/r_box.png";
 
+	// put wood background for body
 	document.getElementsByTagName("body")[0].style.background = "url(img/" + stype + "/bg.jpg)";
 
 }
 
-
+// show all piece on board 
 com.show = function () {
 	com.ct.clearRect(0, 0, com.width, com.height);
 	for (var i = 0; i < com.childList.length; i++) {
@@ -161,6 +166,7 @@ com.showPane = function (x, y, newX, newY) {
 
 
 com.createMans = function (map) {
+	// create chess board with 2d pieceStrs input 
 	for (var i = 0; i < map.length; i++) {
 		for (var n = 0; n < map[i].length; n++) {
 			var key = map[i][n];
@@ -175,7 +181,7 @@ com.createMans = function (map) {
 }
 
 
-
+// not used here 
 com.alert = function (obj, f, n) {
 	if (typeof obj !== "object") {
 		try { console.log(obj) } catch (e) { }
@@ -187,10 +193,11 @@ com.alert = function (obj, f, n) {
 
 }
 
-
 var z = com.alert;
 
-
+// not used here: play.js
+// take the canvas and return its position 
+// + piece's position (on web) => piece's coordinate  
 com.getDomXY = function (dom) {
 	var left = dom.offsetLeft;
 	var top = dom.offsetTop;
@@ -203,7 +210,7 @@ com.getDomXY = function (dom) {
 	return { x: left, y: top };
 }
 
-
+// to get stype 
 com.getCookie = function (name) {
 	if (document.cookie.length > 0) {
 		start = document.cookie.indexOf(name + "=")
@@ -217,6 +224,7 @@ com.getCookie = function (name) {
 	return false;
 }
 
+// clone and reverse piece value for opponent
 com.arr2Clone = function (arr) {
 	var newArr = [];
 	for (var i = 0; i < arr.length; i++) {
@@ -225,8 +233,8 @@ com.arr2Clone = function (arr) {
 	return newArr;
 }
 
-
-com.getData = function (url, fun) {
+// get something daa (for gambit and indexed moves)
+com.getData = function (url, funcToDo) {
 	var XMLHttpRequestObject = false;
 	if (window.XMLHttpRequest) {
 		XMLHttpRequestObject = new XMLHttpRequest();
@@ -238,7 +246,7 @@ com.getData = function (url, fun) {
 		XMLHttpRequestObject.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		XMLHttpRequestObject.onreadystatechange = function () {
 			if (XMLHttpRequestObject.readyState == 4 && XMLHttpRequestObject.status == 200) {
-				fun(XMLHttpRequestObject.responseText)
+				funcToDo(XMLHttpRequestObject.responseText)
 
 			}
 		}
@@ -246,15 +254,21 @@ com.getData = function (url, fun) {
 	}
 }
 
-
+// not used here 
+// return a log move of (xy to newXY)
 com.createMove = function (map, x, y, newX, newY) {
 	var h = "";
+	// choose piece from x,y on map 
 	var man = com.mans[map[y][x]];
 	h += man.text;
+	// move piece and delete old piece 
 	map[newY][newX] = map[y][x];
-	delete map[y][x];
+	delete map[y][x]; // ~ set to null
+	// is myPiece
 	if (man.my === 1) {
+		// 1 -> 10  
 		var mumTo = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
+		// refine x to look like this side
 		newX = 8 - newX;
 		h += mumTo[8 - x];
 		if (newY > y) {
@@ -314,33 +328,6 @@ com.initMap = [
 ];
 
 
-
-// com.initMap1 = [
-// 	[, , , , "J0", , , ,],
-// 	[, , , , , , , ,],
-// 	[, , , , , "c0", , ,],
-// 	[, , , , , , , ,],
-// 	[, , , , , , , ,],
-// 	[, , , , , , , ,],
-// 	[, , , , , , , ,],
-// 	[, , , , , , , ,],
-// 	[, , , , "s0", , , "C0",],
-// 	[, , , "s1", , "j0", , ,]
-// ];
-
-// com.initMap1 = [
-// 	[, , , , "J0", , , ,],
-// 	[, , , , , , , ,],
-// 	[, , , , , "z0", , ,],
-// 	[, , , , , , , ,],
-// 	[, , , , , , , ,],
-// 	[, , , , , , , ,],
-// 	[, , , , , , , ,],
-// 	[, , , , , , , ,],
-// 	[, , , , , , , ,],
-// 	[, , , "j0", , , ,]
-// ];
-
 // convert both side to base piece 
 com.keys = {
 	"c0": "c", "c1": "c",
@@ -361,48 +348,49 @@ com.keys = {
 }
 
 
-// how piece move 
+//#region how piece move and value  
 com.bylaw = {}
 
 com.bylaw.c = function (x, y, map, my) {
-	var d = [];
+	var posibleMove = [];
 
+	// xe đi xuống 
 	for (var i = x - 1; i >= 0; i--) {
 		if (map[y][i]) {
-			if (com.mans[map[y][i]].my != my) d.push([i, y]);
+			if (com.mans[map[y][i]].my != my) posibleMove.push([i, y]);
 			break
 		} else {
-			d.push([i, y])
+			posibleMove.push([i, y])
 		}
 	}
-
+	// + đi lên = hàng dọc 
 	for (var i = x + 1; i <= 8; i++) {
 		if (map[y][i]) {
-			if (com.mans[map[y][i]].my != my) d.push([i, y]);
+			if (com.mans[map[y][i]].my != my) posibleMove.push([i, y]);
 			break
 		} else {
-			d.push([i, y])
+			posibleMove.push([i, y])
 		}
 	}
 
 	for (var i = y - 1; i >= 0; i--) {
 		if (map[i][x]) {
-			if (com.mans[map[i][x]].my != my) d.push([x, i]);
+			if (com.mans[map[i][x]].my != my) posibleMove.push([x, i]);
 			break
 		} else {
-			d.push([x, i])
+			posibleMove.push([x, i])
 		}
 	}
 
 	for (var i = y + 1; i <= 9; i++) {
 		if (map[i][x]) {
-			if (com.mans[map[i][x]].my != my) d.push([x, i]);
+			if (com.mans[map[i][x]].my != my) posibleMove.push([x, i]);
 			break
 		} else {
-			d.push([x, i])
+			posibleMove.push([x, i])
 		}
 	}
-	return d;
+	return posibleMove;
 }
 
 
@@ -719,7 +707,9 @@ com.value.J = com.value.j;
 com.value.P = com.arr2Clone(com.value.p).reverse();
 com.value.Z = com.arr2Clone(com.value.z).reverse();
 
-
+/**
+ * Properties of each piece
+ */
 com.args = {
 	'c':{text:"车", img:'r_c', my:1 ,bl:"c", value:com.value.c},
 	'm':{text:"马", img:'r_m', my:1 ,bl:"m", value:com.value.m},
@@ -737,11 +727,13 @@ com.args = {
 	'P':{text:"炮", img:'b_p', my:-1 ,bl:"p", value:com.value.P},
 	'Z':{text:"卒", img:'b_z', my:-1 ,bl:"z", value:com.value.Z}
 };
+//#endregion
 
 com.class = com.class || {}
 com.class.Man = function (key, x, y) { // key = piece in map 
-	this.pater = key.slice(0, 1); // get first char of piece 
-	var o = com.args[this.pater]
+	this.pater = key.slice(0, 1); // get first char of piece - identifier
+	var o = com.args[this.pater]; // properties of this type of piece
+	// set properties of this piece
 	this.x = x || 0;
 	this.y = y || 0;
 	this.key = key;
