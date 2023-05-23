@@ -87,8 +87,8 @@ export class Board {
 }
 
 class Background {
-    constructor(canvasContext2D) {
-        this.canvasContext2D = canvasContext2D
+    constructor(context2d) {
+        this.context2d = context2d
         this.x = 0;
         this.y = 0;
         this.img = new Image();
@@ -96,13 +96,13 @@ class Background {
     }
 
     show() {
-        this.canvasContext2D.drawImage(this.img, 35 * this.x, 36 * this.y);
+        this.context2d.drawImage(this.img, 35 * this.x, 36 * this.y);
     }
 }
 
 class Pane {
-    constructor(canvasContext2D) {
-        this.canvasContext2D = canvasContext2D;
+    constructor(context2d) {
+        this.context2d = context2d;
         this.x = 0;
         this.y = 0;
         this.newX = 0;
@@ -114,15 +114,15 @@ class Pane {
 
     show() {
         if (this.isShow) {
-            this.canvasContext2D.drawImage(this.img, 35 * this.x + 5, 36 * this.y + 19)
-            this.canvasContext2D.drawImage(this.img, 35 * this.newX + 5, 36 * this.newY + 19)
+            this.context2d.drawImage(this.img, 35 * this.x + 5, 36 * this.y + 19)
+            this.context2d.drawImage(this.img, 35 * this.newX + 5, 36 * this.newY + 19)
         }
     }
 }
 
 class Dot {
-    constructor(canvasContext2D) {
-        this.canvasContext2D = canvasContext2D;
+    constructor(context2d) {
+        this.context2d = context2d;
         this.x = 0;
         this.y = 0;
         this.img = new Image();
@@ -132,28 +132,28 @@ class Dot {
 
     show() {
         for (let i = 0; i < this.dots.length; i++) {
-            this.canvasContext2D.drawImage(this.img, 35 * this.x + 5, 36 * this.y + 19)
+            this.context2d.drawImage(this.img, 35 * this.x + 5, 36 * this.y + 19)
 
         }
     }
 }
 
 export class BoardGUI extends Board {
-    constructor(startPositions, canvasContext2D) {
+    constructor(startPositions, context2d) {
         super(startPositions);
-        this.canvasContext2D = canvasContext2D;
-        this.bg = this.bg || new Background(canvasContext2D);
-        this.pane = this.pane || new Pane(canvasContext2D);
-        this.dot = this.dot || new Dot(canvasContext2D);
+        this.context2d = context2d;
+        this.bg = this.bg || new Background(context2d);
+        this.pane = this.pane || new Pane(context2d);
+        this.dot = this.dot || new Dot(context2d);
     }
 
     show() {
-        this.canvasContext2D.clearRect(0, 0, 325, 402);
+        this.context2d.clearRect(0, 0, 325, 402);
         this.bg.show();
         this.pane.show();
         this.dot.show();
         for (let i = 0; i < this.onBoardPieces.length; i++) {
-            this.onBoardPieces[i].show(this.canvasContext2D);
+            this.onBoardPieces[i].show(this.context2d);
         }
 
     }
