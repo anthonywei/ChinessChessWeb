@@ -62,6 +62,7 @@ window.onload = function () {
 	com.bg.show();
 	com.get("bnBox").style.display = "block";
 
+	// history
 	com.get("billBn").addEventListener("click", function (e) {
 		if (confirm("Do you want to end this play?")) {
 			com.init();

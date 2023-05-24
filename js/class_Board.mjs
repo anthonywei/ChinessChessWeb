@@ -88,7 +88,7 @@ export class Board {
 
 class Background {
     constructor(context2d) {
-        this.context2d = context2d
+        this.context2d = context2d;
         this.x = 0;
         this.y = 0;
         this.img = new Image();
@@ -138,13 +138,16 @@ class Dot {
     }
 }
 
+export function addGUI2Board(board, context2d) {
+    board.context2d = board.context2d || context2d;
+    board.bg = board.bg || new Background(context2d);
+    board.pane = board.pane || new Pane(context2d);
+    board.dot = board.dot || new Dot(context2d);
+}
 export class BoardGUI extends Board {
     constructor(startPositions, context2d) {
         super(startPositions);
-        this.context2d = context2d;
-        this.bg = this.bg || new Background(context2d);
-        this.pane = this.pane || new Pane(context2d);
-        this.dot = this.dot || new Dot(context2d);
+        addGUI(this, context2d);
     }
 
     show() {
@@ -158,3 +161,4 @@ export class BoardGUI extends Board {
 
     }
 }
+

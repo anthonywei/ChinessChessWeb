@@ -63,6 +63,10 @@ export class Piece {
         return 0;
     }
 
+    getPosibleMoves(_board) {
+        return [];
+    }
+
     show(canvas2dcontext) {
         canvas2dcontext.save();
         canvas2dcontext.globalAlpha = 1;
