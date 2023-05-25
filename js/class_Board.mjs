@@ -16,6 +16,7 @@ export class Board {
     constructor(startPositions) {
         this.redToPlay = true;
         this.onBoardPieces = [];
+        this.turn = 0;
 
         startPositions = startPositions || defaultPosition;
         // 2D of pieces
@@ -35,46 +36,46 @@ export class Board {
                 var thisPiece = new Piece();
                 switch (pieceChar) {
                     case "C":
-                        var thisPiece = new Xe(true, {x: i, y: j});
+                        var thisPiece = new Xe(true, { x: i, y: j });
                         break;
                     case "M":
-                        var thisPiece = new Ma(true, {x: i, y: j});
+                        var thisPiece = new Ma(true, { x: i, y: j });
                         break;
                     case "X":
-                        var thisPiece = new Vua(true, {x: i, y: j});
+                        var thisPiece = new Vua(true, { x: i, y: j });
                         break;
                     case "S":
-                        var thisPiece = new Si(true, {x: i, y: j});
+                        var thisPiece = new Si(true, { x: i, y: j });
                         break;
                     case "J":
-                        var thisPiece = new Tuong(true, {x: i, y: j});
+                        var thisPiece = new Tuong(true, { x: i, y: j });
                         break;
                     case "P":
-                        var thisPiece = new Phao(true, {x: i, y: j});
+                        var thisPiece = new Phao(true, { x: i, y: j });
                         break;
                     case "Z":
-                        var thisPiece = new Tot(true, {x: i, y: j});
+                        var thisPiece = new Tot(true, { x: i, y: j });
                         break;
                     case "c":
-                        var thisPiece = new Xe(false, {x: i, y: j});
+                        var thisPiece = new Xe(false, { x: i, y: j });
                         break;
                     case "m":
-                        var thisPiece = new Ma(false, {x: i, y: j});
+                        var thisPiece = new Ma(false, { x: i, y: j });
                         break;
                     case "x":
-                        var thisPiece = new Vua(false, {x: i, y: j});
+                        var thisPiece = new Vua(false, { x: i, y: j });
                         break;
                     case "s":
-                        var thisPiece = new Si(false, {x: i, y: j});
+                        var thisPiece = new Si(false, { x: i, y: j });
                         break;
                     case "j":
-                        var thisPiece = new Tuong(false, {x: i, y: j});
+                        var thisPiece = new Tuong(false, { x: i, y: j });
                         break;
                     case "p":
-                        var thisPiece = new Phao(false, {x: i, y: j});
+                        var thisPiece = new Phao(false, { x: i, y: j });
                         break;
                     case "z":
-                        var thisPiece = new Tot(false, {x: i, y: j});
+                        var thisPiece = new Tot(false, { x: i, y: j });
                         break;
                     default:
                         throw new Error("This piece is not available");
@@ -84,7 +85,47 @@ export class Board {
             }
         }
     }
+
+    getPoint() {
+        let point = 0;
+        this.onBoardPieces.forEach(piece => {
+            point += piece.getCurrentValue();
+        });
+        return point;
+    }
+
+    /**
+     * This method move piece from position to newPosition, remove and return captured piece. 
+     * This method DOES NOT validate the move with any play rules.
+     */
+    movePiece(position, newPosition) {
+        let { x, y } = position;
+        let thisPiece = this.piecesPositionOnBoard[x][y];
+        if (!thisPiece) throw new Error("There is no piece on old position:" + position);
+
+        let { newX, newY } = newPosition;
+        this.piecesPositionOnBoard[x][y] = null;
+        let captured = this.piecesPositionOnBoard[newX][newY];
+        this.piecesPositionOnBoard[newX][newY] = thisPiece;
+        thisPiece.x = newX; thisPiece.y = newY;
+
+        if (this.redToPlay) { this.redToPlay = false; } else { this.redToPlay = true; this.turn += 1; }
+        this.onBoardPieces.splice(this.onBoardPieces.findIndex(captured), 1);
+        return { captured: captured, board: this };
+
+    }
 }
+
+// ---------------------------GUI---------------------------
+const defaultStyle = {
+    width: 325,
+    height: 402,
+    spaceX: 35,
+    spaceY: 36,
+    pointStartX: 5,
+    pointStartY: 19,
+    page: "stype_1"
+};
 
 class Background {
     constructor(context2d) {
@@ -95,8 +136,8 @@ class Background {
         this.img.src = "/img/stype_1/bg.png";
     }
 
-    show() {
-        this.context2d.drawImage(this.img, 35 * this.x, 36 * this.y);
+    show(sizeSetting) {
+        this.context2d.drawImage(this.img, sizeSetting.spaceX * this.x, sizeSetting.spaceY * this.y);
     }
 }
 
@@ -112,10 +153,10 @@ class Pane {
         this.isShow = false;
     }
 
-    show() {
+    show(sizeSetting) {
         if (this.isShow) {
-            this.context2d.drawImage(this.img, 35 * this.x + 5, 36 * this.y + 19)
-            this.context2d.drawImage(this.img, 35 * this.newX + 5, 36 * this.newY + 19)
+            this.context2d.drawImage(this.img, sizeSetting.spaceX * this.x + sizeSetting.pointStartX, sizeSetting.spaceY * this.y + sizeSetting.pointStartY)
+            this.context2d.drawImage(this.img, sizeSetting.spaceX * this.newX + sizeSetting.pointStartX, sizeSetting.spaceY * this.newY + sizeSetting.pointStartY)
         }
     }
 }
@@ -130,24 +171,29 @@ class Dot {
         this.dots = [];
     }
 
-    show() {
+    show(sizeSetting) {
         for (let i = 0; i < this.dots.length; i++) {
-            this.context2d.drawImage(this.img, 35 * this.x + 5, 36 * this.y + 19)
+            this.context2d.drawImage(this.img, sizeSetting.spaceX * this.x + sizeSetting.pointStartX, sizeSetting.spaceY * this.y + sizeSetting.pointStartY);
 
         }
     }
 }
 
-export function addGUI2Board(board, context2d) {
-    board.context2d = board.context2d || context2d;
-    board.bg = board.bg || new Background(context2d);
-    board.pane = board.pane || new Pane(context2d);
-    board.dot = board.dot || new Dot(context2d);
+export function addGUI2Board(board, context2dAvailabler, sizeSetting) {
+    if (!board.context2d) {
+        board.context2d = context2dAvailabler.getContext("2d");
+        board.sizeSetting = sizeSetting;
+        context2dAvailabler.width = sizeSetting.width;
+        context2dAvailabler.height = sizeSetting.height
+    }
+    board.bg = board.bg || new Background(context2dAvailabler);
+    board.pane = board.pane || new Pane(context2dAvailabler);
+    board.dot = board.dot || new Dot(context2dAvailabler);
 }
 export class BoardGUI extends Board {
-    constructor(startPositions, context2d) {
+    constructor(startPositions, context2dAvailabler, sizeSetting) {
         super(startPositions);
-        addGUI(this, context2d);
+        addGUI(this, context2dAvailabler, sizeSetting || defaultStyle);
     }
 
     show() {
@@ -160,5 +206,13 @@ export class BoardGUI extends Board {
         }
 
     }
+}
+
+// ---------------------------Bot---------------------------
+export function extendBoard(board) {
+    // format: {oldposiotion, newposiotion}: new Board;
+    board.nextBoards = board.nextBoards || {};
+
+
 }
 
