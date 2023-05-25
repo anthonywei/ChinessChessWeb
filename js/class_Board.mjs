@@ -35,46 +35,46 @@ export class Board {
                 var thisPiece = new Piece();
                 switch (pieceChar) {
                     case "C":
-                        var thisPiece = new Xe(true, [i, j]);
+                        var thisPiece = new Xe(true, {x: i, y: j});
                         break;
                     case "M":
-                        var thisPiece = new Ma(true, [i, j]);
+                        var thisPiece = new Ma(true, {x: i, y: j});
                         break;
                     case "X":
-                        var thisPiece = new Vua(true, [i, j]);
+                        var thisPiece = new Vua(true, {x: i, y: j});
                         break;
                     case "S":
-                        var thisPiece = new Si(true, [i, j]);
+                        var thisPiece = new Si(true, {x: i, y: j});
                         break;
                     case "J":
-                        var thisPiece = new Tuong(true, [i, j]);
+                        var thisPiece = new Tuong(true, {x: i, y: j});
                         break;
                     case "P":
-                        var thisPiece = new Phao(true, [i, j]);
+                        var thisPiece = new Phao(true, {x: i, y: j});
                         break;
                     case "Z":
-                        var thisPiece = new Tot(true, [i, j]);
+                        var thisPiece = new Tot(true, {x: i, y: j});
                         break;
                     case "c":
-                        var thisPiece = new Xe(false, [i, j]);
+                        var thisPiece = new Xe(false, {x: i, y: j});
                         break;
                     case "m":
-                        var thisPiece = new Ma(false, [i, j]);
+                        var thisPiece = new Ma(false, {x: i, y: j});
                         break;
                     case "x":
-                        var thisPiece = new Vua(false, [i, j]);
+                        var thisPiece = new Vua(false, {x: i, y: j});
                         break;
                     case "s":
-                        var thisPiece = new Si(false, [i, j]);
+                        var thisPiece = new Si(false, {x: i, y: j});
                         break;
                     case "j":
-                        var thisPiece = new Tuong(false, [i, j]);
+                        var thisPiece = new Tuong(false, {x: i, y: j});
                         break;
                     case "p":
-                        var thisPiece = new Phao(false, [i, j]);
+                        var thisPiece = new Phao(false, {x: i, y: j});
                         break;
                     case "z":
-                        var thisPiece = new Tot(false, [i, j]);
+                        var thisPiece = new Tot(false, {x: i, y: j});
                         break;
                     default:
                         throw new Error("This piece is not available");

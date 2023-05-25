@@ -59,14 +59,6 @@ export class Piece {
         return this.scale * (this.baseValue + this.getPositionValue());
     }
 
-    getPositionValue() {
-        return 0;
-    }
-
-    getPosibleMoves(_board) {
-        return [];
-    }
-
     show(canvas2dcontext) {
         canvas2dcontext.save();
         canvas2dcontext.globalAlpha = 1;
@@ -78,6 +70,14 @@ export class Piece {
         let out = new Image();
         out.src = "/img/stype_1/" + this.imgStr + ".png";
         return out;
+    }
+    
+    getPosibleMoves(_board) {
+        return [];
+    }
+    
+    getPositionValue() {
+        return 0;
     }
 }
 
@@ -107,7 +107,7 @@ export class Xe extends Piece {
     }
 
     getPositionValue() {
-        let [x, y] = this.position;
+        let {x, y} = this.position;
         return POSITION_VALUES.Xe[x][y];
     }
 }
