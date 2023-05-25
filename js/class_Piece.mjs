@@ -53,10 +53,11 @@ export class Piece {
         this.scale = scale;
         this.position = position;
         this.baseValue = baseValue;
+        this.selected = false;
     }
 
     getCurrentValue() {
-        return this.scale * (this.baseValue + this.getPositionValue());
+        return this.scale * (this.baseValue + this._getPositionValue());
     }
 
     show(canvas2dcontext) {
@@ -72,13 +73,24 @@ export class Piece {
         return out;
     }
     
+    click(board) {
+        this.selected = ! this.selected;
+        // Todo: remove all dots 
+        if (this.selected) {
+            let moves = this.getPosibleMoves(board);
+            // Todo: show dots
+        }
+    }
+    
+    // ---------------------------abtract methods---------------------------
     getPosibleMoves(_board) {
         return [];
     }
     
-    getPositionValue() {
+    _getPositionValue() {
         return 0;
     }
+    
 }
 
 POSITION_VALUES.Xe = [
@@ -106,7 +118,7 @@ export class Xe extends Piece {
         this.imgStr = properties.imgStr;
     }
 
-    getPositionValue() {
+    _getPositionValue() {
         let {x, y} = this.position;
         return POSITION_VALUES.Xe[x][y];
     }
@@ -126,7 +138,7 @@ export class Ma extends Piece {
         this.imgStr = properties.imgStr;
     }
 
-    getPositionValue() {
+    _getPositionValue() {
         let [x, y] = this.position;
         return Ma.positionValue[x][y];
     }
@@ -161,7 +173,7 @@ export class Si extends Piece {
         this.imgStr = properties.imgStr;
     }
 
-    getPositionValue() {
+    _getPositionValue() {
         let [x, y] = this.position;
         return Si.positionValue[x][y];
     }
@@ -181,7 +193,7 @@ export class Tuong extends Piece {
         this.imgStr = properties.imgStr;
     }
 
-    getPositionValue() {
+    _getPositionValue() {
         let [x, y] = this.position;
         return Tuong.positionValue[x][y];
     }
@@ -201,7 +213,7 @@ export class Phao extends Piece {
         this.imgStr = properties.imgStr;
     }
 
-    getPositionValue() {
+    _getPositionValue() {
         let [x, y] = this.position;
         return Phao.positionValue[x][y];
     }
@@ -221,7 +233,7 @@ export class Tot extends Piece {
         this.imgStr = properties.imgStr;
     }
 
-    getPositionValue() {
+    _getPositionValue() {
         let [x, y] = this.position;
         return Tot.positionValue[x][y];
     }
