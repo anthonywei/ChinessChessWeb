@@ -17,12 +17,8 @@ com.init = function (stype) {
 	com.get("box").style.width = com.width + 1 + "px";
 
 	com.canvas = document.getElementById("chess");
-	// ct : 2d object with support functions
-	com.ct = com.canvas.getContext("2d");
-	com.canvas.width = com.width;
-	com.canvas.height = com.height;
 
-	com.board = new BoardGUI(null, com.ct);
+	com.board = new BoardGUI(null, com.canvas, null);
 	com.loadWoodenBg(com.page);
 
 	com.bg = com.board.bg;
@@ -92,6 +88,7 @@ window.onload = function () {
 		}
 	})
 
+	// no button 
 	com.get("stypeBn").addEventListener("click", function (e) {
 		var stype = com.nowStype;
 		if (stype == "stype1") stype = "stype2";
@@ -109,15 +106,6 @@ window.onload = function () {
 		}, 2000);
 	})
 
-	com.getData("js/gambit.all.js", //TODO: xxx
-		function (data) {
-			com.gambit = data.split(" ");
-			AI.historyBill = com.gambit;
-		})
-	com.getData("js/store.js", // TODO: xxx
-		function (data) {
-			com.store = data.split(" ");
-		})
 }
 
 
@@ -136,20 +124,6 @@ com.showPane = function (x, y, newX, newY) {
 }
 
 
-// not used here: play.js
-// take the canvas and return its position 
-// + piece's position (on web) => piece's coordinate  
-com.getDomXY = function (dom) {
-	var left = dom.offsetLeft;
-	var top = dom.offsetTop;
-	var current = dom.offsetParent;
-	while (current !== null) {
-		left += current.offsetLeft;
-		top += current.offsetTop;
-		current = current.offsetParent;
-	}
-	return { x: left, y: top };
-}
 
 // to get stype 
 com.getCookie = function (name) {
@@ -174,26 +148,7 @@ com.arr2Clone = function (arr) {
 	return newArr;
 }
 
-// get something daa (for gambit and indexed moves)
-com.getData = function (url, funcToDo) {
-	var XMLHttpRequestObject = false;
-	if (window.XMLHttpRequest) {
-		XMLHttpRequestObject = new XMLHttpRequest();
-	} else if (window.ActiveXObject) {
-		XMLHttpRequestObject = new ActiveXObject("Microsoft.XMLHTTP");
-	}
-	if (XMLHttpRequestObject) {
-		XMLHttpRequestObject.open("GET", url);
-		XMLHttpRequestObject.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-		XMLHttpRequestObject.onreadystatechange = function () {
-			if (XMLHttpRequestObject.readyState == 4 && XMLHttpRequestObject.status == 200) {
-				funcToDo(XMLHttpRequestObject.responseText)
 
-			}
-		}
-		XMLHttpRequestObject.send(null);
-	}
-}
 
 // not used here 
 // return a log move of (xy to newXY)
@@ -255,38 +210,8 @@ com.createMove = function (map, x, y, newX, newY) {
 	return h;
 }
 
-com.initMap = [
-	['C0', 'M0', 'X0', 'S0', 'J0', 'S1', 'X1', 'M1', 'C1'],
-	[, , , , , , , ,],
-	[, 'P0', , , , , , 'P1',],
-	['Z0', , 'Z1', , 'Z2', , 'Z3', , 'Z4'],
-	[, , , , , , , ,],
-	[, , , , , , , ,],
-	['z0', , 'z1', , 'z2', , 'z3', , 'z4'],
-	[, 'p0', , , , , , 'p1',],
-	[, , , , , , , ,],
-	['c0', 'm0', 'x0', 's0', 'j0', 's1', 'x1', 'm1', 'c1']
-];
 
 
-// convert both side to base piece 
-com.keys = {
-	"c0": "c", "c1": "c",
-	"m0": "m", "m1": "m",
-	"x0": "x", "x1": "x",
-	"s0": "s", "s1": "s",
-	"j0": "j",
-	"p0": "p", "p1": "p",
-	"z0": "z", "z1": "z", "z2": "z", "z3": "z", "z4": "z", "z5": "z",
-
-	"C0": "c", "C1": "C",
-	"M0": "M", "M1": "M",
-	"X0": "X", "X1": "X",
-	"S0": "S", "S1": "S",
-	"J0": "J",
-	"P0": "P", "P1": "P",
-	"Z0": "Z", "Z1": "Z", "Z2": "Z", "Z3": "Z", "Z4": "Z", "Z5": "Z",
-}
 
 
 //#region how piece move and value  
@@ -700,42 +625,7 @@ com.class.Man = function (key, x, y) { // key = piece in map
 	}
 }
 
-com.class.Bg = function (img, x, y) {
-	this.x = x || 0;
-	this.y = y || 0;
-	this.isShow = true;
 
-	this.show = function () {
-		if (this.isShow) com.ct.drawImage(com.bgImg, com.spaceX * this.x, com.spaceY * this.y);
-	}
-}
-com.class.Pane = function (img, x, y) {
-	this.x = x || 0;
-	this.y = y || 0;
-	this.newX = x || 0;
-	this.newY = y || 0;
-	this.isShow = true;
-
-	this.show = function () {
-		if (this.isShow) {
-			com.ct.drawImage(com.paneImg, com.spaceX * this.x + com.pointStartX, com.spaceY * this.y + com.pointStartY)
-			com.ct.drawImage(com.paneImg, com.spaceX * this.newX + com.pointStartX, com.spaceY * this.newY + com.pointStartY)
-		}
-	}
-}
-
-com.class.Dot = function (img, x, y) {
-	this.x = x || 0;
-	this.y = y || 0;
-	this.isShow = true;
-	this.dots = []
-
-	this.show = function () {
-		for (var i = 0; i < this.dots.length; i++) {
-			if (this.isShow) com.ct.drawImage(com.dotImg, com.spaceX * this.dots[i][0] + 10 + com.pointStartX, com.spaceY * this.dots[i][1] + 10 + com.pointStartY)
-		}
-	}
-}
 
 com.init();
 

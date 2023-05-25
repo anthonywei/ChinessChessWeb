@@ -128,22 +128,24 @@ const defaultStyle = {
 };
 
 class Background {
-    constructor(context2d) {
+    constructor(context2d, sizeSetting) {
         this.context2d = context2d;
+        this.sizeSetting = sizeSetting;
         this.x = 0;
         this.y = 0;
         this.img = new Image();
         this.img.src = "/img/stype_1/bg.png";
     }
 
-    show(sizeSetting) {
-        this.context2d.drawImage(this.img, sizeSetting.spaceX * this.x, sizeSetting.spaceY * this.y);
+    show() {
+        this.context2d.drawImage(this.img, this.sizeSetting.spaceX * this.x, this.sizeSetting.spaceY * this.y);
     }
 }
 
 class Pane {
-    constructor(context2d) {
+    constructor(context2d, sizeSetting) {
         this.context2d = context2d;
+        this.sizeSetting = sizeSetting;
         this.x = 0;
         this.y = 0;
         this.newX = 0;
@@ -153,10 +155,10 @@ class Pane {
         this.isShow = false;
     }
 
-    show(sizeSetting) {
+    show() {
         if (this.isShow) {
-            this.context2d.drawImage(this.img, sizeSetting.spaceX * this.x + sizeSetting.pointStartX, sizeSetting.spaceY * this.y + sizeSetting.pointStartY)
-            this.context2d.drawImage(this.img, sizeSetting.spaceX * this.newX + sizeSetting.pointStartX, sizeSetting.spaceY * this.newY + sizeSetting.pointStartY)
+            this.context2d.drawImage(this.img, this.sizeSetting.spaceX * this.x + sizeSetting.pointStartX, sizeSetting.spaceY * this.y + sizeSetting.pointStartY)
+            this.context2d.drawImage(this.img, this.sizeSetting.spaceX * this.newX + sizeSetting.pointStartX, sizeSetting.spaceY * this.newY + sizeSetting.pointStartY)
         }
     }
 }
@@ -183,17 +185,18 @@ export function addGUI2Board(board, context2dAvailabler, sizeSetting) {
     if (!board.context2d) {
         board.context2d = context2dAvailabler.getContext("2d");
         board.sizeSetting = sizeSetting;
+        board.context2dAvailabler = context2dAvailabler;
         context2dAvailabler.width = sizeSetting.width;
         context2dAvailabler.height = sizeSetting.height
     }
-    board.bg = board.bg || new Background(context2dAvailabler);
-    board.pane = board.pane || new Pane(context2dAvailabler);
-    board.dot = board.dot || new Dot(context2dAvailabler);
+    board.bg = board.bg || new Background(board.context2d, sizeSetting);
+    board.pane = board.pane || new Pane(board.context2d, sizeSetting);
+    board.dot = board.dot || new Dot(board.context2d, sizeSetting);
 }
 export class BoardGUI extends Board {
     constructor(startPositions, context2dAvailabler, sizeSetting) {
         super(startPositions);
-        addGUI(this, context2dAvailabler, sizeSetting || defaultStyle);
+        addGUI2Board(this, context2dAvailabler, sizeSetting || defaultStyle);
     }
 
     show() {
@@ -206,13 +209,30 @@ export class BoardGUI extends Board {
         }
 
     }
+
+    getClicked(e) {
+        let domXY = getDomXY(this.context2dAvailabler);
+        let x = Math.round((e.pageX - domXY.x - com.pointStartX - 20) / com.spaceX)
+        let y = Math.round((e.pageY - domXY.y - com.pointStartY - 20) / com.spaceY)
+
+        return {
+            piece: this.piecesPositionOnBoard[x][y],
+            point: { x: x, y: y }
+        }
+    }
 }
 
-// ---------------------------Bot---------------------------
-export function extendBoard(board) {
-    // format: {oldposiotion, newposiotion}: new Board;
-    board.nextBoards = board.nextBoards || {};
-
-
+// not used here: play.js
+// take the canvas and return its position 
+// + piece's position (on web) => piece's coordinate 
+function getDomXY(dom) {
+    var left = dom.offsetLeft;
+    var top = dom.offsetTop;
+    var current = dom.offsetParent;
+    while (current !== null) {
+        left += current.offsetLeft;
+        top += current.offsetTop;
+        current = current.offsetParent;
+    }
+    return { x: left, y: top };
 }
-
