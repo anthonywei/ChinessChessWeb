@@ -33,20 +33,20 @@ const VALUE = {
 }
 let POSITION_VALUES:{[key: string]: [number[], number[], number[], number[], number[], number[], number[], number[], number[]]} = {}
 
-function parseSide(side: (boolean| string| number)) {
+function parseSide(isRedPiece: (boolean| string| number)) {
     let scale = 0;
-    if (typeof side === "boolean") {
-        if (side) scale = 1; else scale = -1;
+    if (typeof isRedPiece === "boolean") {
+        if (isRedPiece) scale = 1; else scale = -1;
     }
-    else if (typeof side === "string") {
-        side = side.toLowerCase();
-        if (side === "red" || side === "r") scale = 1;
-        if (side === "black" || side === "b") scale = -1;
+    else if (typeof isRedPiece === "string") {
+        isRedPiece = isRedPiece.toLowerCase();
+        if (isRedPiece === "red" || isRedPiece === "r") scale = 1;
+        if (isRedPiece === "black" || isRedPiece === "b") scale = -1;
     }
-    else if (typeof side === "number") {
-        side = Math.sign(side);
+    else if (typeof isRedPiece === "number") {
+        isRedPiece = Math.sign(isRedPiece);
     }
-    if (scale == 0) throw new Error("Invalid side value");
+    if (scale == 0) throw new Error("Invalid isRedPiece value");
 
     return scale;
 }
@@ -120,8 +120,8 @@ POSITION_VALUES.Xe = [
 ];
 export class Xe extends Piece {
 
-    constructor(side: (boolean| string| number), position: {x: number, y: number}) {
-        let scale = parseSide(side);
+    constructor(isRedPiece: (boolean| string| number), position: {x: number, y: number}) {
+        let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Xe);
 
         if (scale == 1) {
@@ -144,8 +144,8 @@ export class Xe extends Piece {
 
 export class Ma extends Piece {
 
-    constructor(side: (boolean| string| number), position: {x: number, y: number}) {
-        let scale = parseSide(side);
+    constructor(isRedPiece: (boolean| string| number), position: {x: number, y: number}) {
+        let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Ma);
 
         if (scale == 1) {
@@ -168,8 +168,8 @@ export class Ma extends Piece {
 
 export class Vua extends Piece {
 
-    constructor(side: (boolean| string| number), position: {x: number, y: number}) {
-        let scale = parseSide(side);
+    constructor(isRedPiece: (boolean| string| number), position: {x: number, y: number}) {
+        let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Vua);
 
         if (scale == 1) {
@@ -184,8 +184,8 @@ export class Vua extends Piece {
 
 export class Si extends Piece {
 
-    constructor(side: (boolean| string| number), position: {x: number, y: number}) {
-        let scale = parseSide(side);
+    constructor(isRedPiece: (boolean| string| number), position: {x: number, y: number}) {
+        let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Si);
 
         if (scale == 1) {
@@ -208,8 +208,8 @@ export class Si extends Piece {
 
 export class Tuong extends Piece {
 
-    constructor(side: (boolean| string| number), position: {x: number, y: number}) {
-        let scale = parseSide(side);
+    constructor(isRedPiece: (boolean| string| number), position: {x: number, y: number}) {
+        let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Tuong);
 
         if (scale == 1) {
@@ -232,8 +232,8 @@ export class Tuong extends Piece {
 
 export class Phao extends Piece {
 
-    constructor(side: (boolean| string| number), position: {x: number, y: number}) {
-        let scale = parseSide(side);
+    constructor(isRedPiece: (boolean| string| number), position: {x: number, y: number}) {
+        let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Phao);
 
         if (scale == 1) {
@@ -256,8 +256,8 @@ export class Phao extends Piece {
 
 export class Tot extends Piece {
 
-    constructor(side: (boolean| string| number), position: {x: number, y: number}) {
-        let scale = parseSide(side);
+    constructor(isRedPiece: (boolean| string| number), position: {x: number, y: number}) {
+        let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Tot);
 
         if (scale == 1) {

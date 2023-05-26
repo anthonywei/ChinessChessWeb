@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.BoardGUI = exports.addGUI2Board = exports.Board = void 0;
-const class_Piece_1 = require("./class_Piece");
+import { Xe, Ma, Vua, Si, Tuong, Phao, Tot } from "./class_Piece.js";
 const defaultPosition = [
     ["C1", null, null, "Z4", null, null, "z4", null, null, "c1",],
     ["M1", null, "P1", null, null, null, null, "p1", null, "m1",],
@@ -13,8 +10,9 @@ const defaultPosition = [
     ["M0", null, "P0", null, null, null, null, "p0", null, "m0",],
     ["C0", null, null, "Z0", null, null, "z0", null, null, "c0",]
 ];
-class Board {
+export class Board {
     constructor(startPositions) {
+        var _a;
         this.redToPlay = true;
         this.onBoardPieces = [];
         this.turn = 0;
@@ -28,61 +26,56 @@ class Board {
             let colPieces = [];
             this.piecesPositionOnBoard.push(colPieces);
             for (var j = 0; j < refinedStartPositions[i].length; j++) {
-                if (!refinedStartPositions[i][j]) {
-                    colPieces.push(null);
-                    continue;
-                }
-                ;
-                const pieceChar = refinedStartPositions ? [i][j].toString().charAt(0) : null;
+                const pieceChar = (_a = refinedStartPositions[i][j]) === null || _a === void 0 ? void 0 : _a.toString().charAt(0);
                 var thisPiece;
                 switch (pieceChar) {
-                    case null:
+                    case undefined:
                         thisPiece = null;
                         break;
                     case "C":
-                        thisPiece = new class_Piece_1.Xe(true, { x: i, y: j });
+                        thisPiece = new Xe(true, { x: i, y: j });
                         break;
                     case "M":
-                        thisPiece = new class_Piece_1.Ma(true, { x: i, y: j });
+                        thisPiece = new Ma(true, { x: i, y: j });
                         break;
                     case "X":
-                        thisPiece = new class_Piece_1.Vua(true, { x: i, y: j });
+                        thisPiece = new Vua(true, { x: i, y: j });
                         break;
                     case "S":
-                        thisPiece = new class_Piece_1.Si(true, { x: i, y: j });
+                        thisPiece = new Si(true, { x: i, y: j });
                         break;
                     case "J":
-                        thisPiece = new class_Piece_1.Tuong(true, { x: i, y: j });
+                        thisPiece = new Tuong(true, { x: i, y: j });
                         break;
                     case "P":
-                        thisPiece = new class_Piece_1.Phao(true, { x: i, y: j });
+                        thisPiece = new Phao(true, { x: i, y: j });
                         break;
                     case "Z":
-                        thisPiece = new class_Piece_1.Tot(true, { x: i, y: j });
+                        thisPiece = new Tot(true, { x: i, y: j });
                         break;
                     case "c":
-                        thisPiece = new class_Piece_1.Xe(false, { x: i, y: j });
+                        thisPiece = new Xe(false, { x: i, y: j });
                         break;
                     case "m":
-                        thisPiece = new class_Piece_1.Ma(false, { x: i, y: j });
+                        thisPiece = new Ma(false, { x: i, y: j });
                         break;
                     case "x":
-                        thisPiece = new class_Piece_1.Vua(false, { x: i, y: j });
+                        thisPiece = new Vua(false, { x: i, y: j });
                         break;
                     case "s":
-                        thisPiece = new class_Piece_1.Si(false, { x: i, y: j });
+                        thisPiece = new Si(false, { x: i, y: j });
                         break;
                     case "j":
-                        thisPiece = new class_Piece_1.Tuong(false, { x: i, y: j });
+                        thisPiece = new Tuong(false, { x: i, y: j });
                         break;
                     case "p":
-                        thisPiece = new class_Piece_1.Phao(false, { x: i, y: j });
+                        thisPiece = new Phao(false, { x: i, y: j });
                         break;
                     case "z":
-                        thisPiece = new class_Piece_1.Tot(false, { x: i, y: j });
+                        thisPiece = new Tot(false, { x: i, y: j });
                         break;
                     default:
-                        throw new Error("This piece is not available");
+                        throw new Error("This piece `" + pieceChar + "` at `" + i + j + "` is not available");
                 }
                 colPieces.push(thisPiece);
                 if (thisPiece)
@@ -119,7 +112,6 @@ class Board {
         return { captured: captured, board: this };
     }
 }
-exports.Board = Board;
 const defaultStyle = {
     width: 325,
     height: 402,
@@ -177,7 +169,7 @@ class Dot {
         }
     }
 }
-function addGUI2Board(board, context2dAvailabler, sizeSetting) {
+export function addGUI2Board(board, context2dAvailabler, sizeSetting) {
     let thisContext2d = context2dAvailabler.getContext("2d");
     if (!("context2d" in board)) {
         Object.assign(board, {
@@ -188,15 +180,14 @@ function addGUI2Board(board, context2dAvailabler, sizeSetting) {
         context2dAvailabler.width = sizeSetting.width;
         context2dAvailabler.height = sizeSetting.height;
     }
-    if (board.hasOwnProperty("bg"))
+    if (!board.hasOwnProperty("bg"))
         Object.assign(board, { bg: new Background(thisContext2d, sizeSetting) });
-    if (board.hasOwnProperty("pane"))
+    if (!board.hasOwnProperty("pane"))
         Object.assign(board, { pane: new Pane(thisContext2d, sizeSetting) });
-    if (board.hasOwnProperty("dot"))
+    if (!board.hasOwnProperty("dot"))
         Object.assign(board, { dot: new Background(thisContext2d, sizeSetting) });
 }
-exports.addGUI2Board = addGUI2Board;
-class BoardGUI extends Board {
+export class BoardGUI extends Board {
     constructor(startPositions, context2dAvailabler, sizeSetting) {
         super(startPositions);
         addGUI2Board(this, context2dAvailabler, sizeSetting || defaultStyle);
@@ -225,7 +216,6 @@ class BoardGUI extends Board {
         };
     }
 }
-exports.BoardGUI = BoardGUI;
 function getDomXY(dom) {
     var left = dom.offsetLeft;
     var top = dom.offsetTop;

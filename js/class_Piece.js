@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Tot = exports.Phao = exports.Tuong = exports.Si = exports.Vua = exports.Ma = exports.Xe = exports.Piece = void 0;
 const PROPERTIES = {
     red: {
         Xe: { text: "俥", imgStr: 'r_c' },
@@ -31,29 +28,29 @@ const VALUE = {
     Tot: 10
 };
 let POSITION_VALUES = {};
-function parseSide(side) {
+function parseSide(isRedPiece) {
     let scale = 0;
-    if (typeof side === "boolean") {
-        if (side)
+    if (typeof isRedPiece === "boolean") {
+        if (isRedPiece)
             scale = 1;
         else
             scale = -1;
     }
-    else if (typeof side === "string") {
-        side = side.toLowerCase();
-        if (side === "red" || side === "r")
+    else if (typeof isRedPiece === "string") {
+        isRedPiece = isRedPiece.toLowerCase();
+        if (isRedPiece === "red" || isRedPiece === "r")
             scale = 1;
-        if (side === "black" || side === "b")
+        if (isRedPiece === "black" || isRedPiece === "b")
             scale = -1;
     }
-    else if (typeof side === "number") {
-        side = Math.sign(side);
+    else if (typeof isRedPiece === "number") {
+        isRedPiece = Math.sign(isRedPiece);
     }
     if (scale == 0)
-        throw new Error("Invalid side value");
+        throw new Error("Invalid isRedPiece value");
     return scale;
 }
-class Piece {
+export class Piece {
     constructor(scale, position, baseValue) {
         this.scale = scale;
         this.position = position;
@@ -90,7 +87,6 @@ class Piece {
         return "";
     }
 }
-exports.Piece = Piece;
 POSITION_VALUES.Xe = [
     [3, 3, 3, 3, 4, 4, 2, -1, 0, -3],
     [4, 6, 4, 6, 5, 6, 4, 4, 4, 3],
@@ -102,9 +98,9 @@ POSITION_VALUES.Xe = [
     [4, 6, 4, 6, 5, 6, 4, 4, 4, 3],
     [3, 3, 3, 3, 4, 4, 2, -1, 0, -3]
 ];
-class Xe extends Piece {
-    constructor(side, position) {
-        let scale = parseSide(side);
+export class Xe extends Piece {
+    constructor(isRedPiece, position) {
+        let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Xe);
         if (scale == 1) {
             var properties = PROPERTIES.red.Xe;
@@ -123,10 +119,9 @@ class Xe extends Piece {
         return POSITION_VALUES.Xe[x][y];
     }
 }
-exports.Xe = Xe;
-class Ma extends Piece {
-    constructor(side, position) {
-        let scale = parseSide(side);
+export class Ma extends Piece {
+    constructor(isRedPiece, position) {
+        let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Ma);
         if (scale == 1) {
             var properties = PROPERTIES.red.Ma;
@@ -145,10 +140,9 @@ class Ma extends Piece {
         return POSITION_VALUES.Ma[x][y];
     }
 }
-exports.Ma = Ma;
-class Vua extends Piece {
-    constructor(side, position) {
-        let scale = parseSide(side);
+export class Vua extends Piece {
+    constructor(isRedPiece, position) {
+        let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Vua);
         if (scale == 1) {
             var properties = PROPERTIES.red.Vua;
@@ -160,10 +154,9 @@ class Vua extends Piece {
         this.imgStr = properties.imgStr;
     }
 }
-exports.Vua = Vua;
-class Si extends Piece {
-    constructor(side, position) {
-        let scale = parseSide(side);
+export class Si extends Piece {
+    constructor(isRedPiece, position) {
+        let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Si);
         if (scale == 1) {
             var properties = PROPERTIES.red.Si;
@@ -182,10 +175,9 @@ class Si extends Piece {
         return POSITION_VALUES.Si[x][y];
     }
 }
-exports.Si = Si;
-class Tuong extends Piece {
-    constructor(side, position) {
-        let scale = parseSide(side);
+export class Tuong extends Piece {
+    constructor(isRedPiece, position) {
+        let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Tuong);
         if (scale == 1) {
             var properties = PROPERTIES.red.Tuong;
@@ -204,10 +196,9 @@ class Tuong extends Piece {
         return POSITION_VALUES.Tuong[x][y];
     }
 }
-exports.Tuong = Tuong;
-class Phao extends Piece {
-    constructor(side, position) {
-        let scale = parseSide(side);
+export class Phao extends Piece {
+    constructor(isRedPiece, position) {
+        let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Phao);
         if (scale == 1) {
             var properties = PROPERTIES.red.Phao;
@@ -226,10 +217,9 @@ class Phao extends Piece {
         return POSITION_VALUES.Phao[x][y];
     }
 }
-exports.Phao = Phao;
-class Tot extends Piece {
-    constructor(side, position) {
-        let scale = parseSide(side);
+export class Tot extends Piece {
+    constructor(isRedPiece, position) {
+        let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Tot);
         if (scale == 1) {
             var properties = PROPERTIES.red.Tot;
@@ -248,4 +238,3 @@ class Tot extends Piece {
         return POSITION_VALUES.Tot[x][y];
     }
 }
-exports.Tot = Tot;

@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const class_Board_1 = require("./class_Board");
+import { BoardGUI } from "./class_Board.js";
 let stype1 = {
     width: 325,
     height: 402,
@@ -18,13 +16,14 @@ function get(id) {
 }
 get("box").style.width = stype1.width + 1 + "px";
 let canvas = get("chess");
-let board = new class_Board_1.BoardGUI(null, canvas, stype1);
+var board = new BoardGUI(null, canvas, stype1);
 document.getElementsByTagName("body")[0].style.background = "url(img/" + stype1.page + "/bg.jpg)";
 window.onload = function () {
     if (board.pane)
         board.pane.isShow = false;
     if (board.bg)
         board.bg.show();
+    board.show();
     get("bnBox").style.display = "block";
     get("billBn").addEventListener("click", function (e) {
         if (confirm("Do you want to end this play?")) {

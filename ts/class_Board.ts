@@ -34,15 +34,15 @@ export class Board {
             this.piecesPositionOnBoard.push(colPieces);
             for (var j = 0; j < refinedStartPositions[i].length; j++) {
                 // check if null
-                if (!refinedStartPositions[i][j]) {
-                    colPieces.push(null)
-                    continue;
-                };
+                // if (!refinedStartPositions[i][j]) {
+                //     colPieces.push(null)
+                //     continue;
+                // };
                 // get identifier
-                const pieceChar = refinedStartPositions ? [i][j].toString().charAt(0) : null // rSP is never null
+                const pieceChar = refinedStartPositions[i][j]?.toString().charAt(0) // rSP is never null
                 var thisPiece: Piece | null;
                 switch (pieceChar) {
-                    case null:
+                    case undefined:
                         thisPiece = null;
                         break;
                     case "C":
@@ -88,7 +88,7 @@ export class Board {
                         thisPiece = new Tot(false, { x: i, y: j });
                         break;
                     default:
-                        throw new Error("This piece is not available");
+                        throw new Error("This piece `" + pieceChar +"` at `" + i + j + "` is not available");
                 }
                 colPieces.push(thisPiece);
                 if (thisPiece) this.onBoardPieces.push(thisPiece);
@@ -234,9 +234,9 @@ export function addGUI2Board(board: Board, context2dAvailabler: any, sizeSetting
         context2dAvailabler.width = sizeSetting.width;
         context2dAvailabler.height = sizeSetting.height
     }
-    if (board.hasOwnProperty("bg")) Object.assign(board, { bg: new Background(thisContext2d, sizeSetting) });
-    if (board.hasOwnProperty("pane")) Object.assign(board, { pane: new Pane(thisContext2d, sizeSetting) });
-    if (board.hasOwnProperty("dot")) Object.assign(board, { dot: new Background(thisContext2d, sizeSetting) });
+    if (!board.hasOwnProperty("bg")) Object.assign(board, { bg: new Background(thisContext2d, sizeSetting) });
+    if (!board.hasOwnProperty("pane")) Object.assign(board, { pane: new Pane(thisContext2d, sizeSetting) });
+    if (!board.hasOwnProperty("dot")) Object.assign(board, { dot: new Background(thisContext2d, sizeSetting) });
 }
 export class BoardGUI extends Board {
     public context2d: any;
