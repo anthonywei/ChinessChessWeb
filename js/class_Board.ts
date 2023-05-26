@@ -1,4 +1,4 @@
-import { Xe, Ma, Vua, Si, Tuong, Phao, Tot, Piece } from "./class_Piece.mjs"
+import { Xe, Ma, Vua, Si, Tuong, Phao, Tot, Piece } from "./class_Piece"
 
 
 const defaultPosition = [
@@ -13,75 +13,85 @@ const defaultPosition = [
     ["C0", null, null, "Z0", null, null, "z0", null, null, "c0",]
 ];
 export class Board {
-    constructor(startPositions) {
+    public redToPlay: boolean;
+    public onBoardPieces: Piece[];
+    public turn: number;
+    public piecesPositionOnBoard: (Piece | null)[][];
+
+    constructor(startPositions: ((object | null)[][] | null)) {
         this.redToPlay = true;
         this.onBoardPieces = [];
         this.turn = 0;
 
-        startPositions = startPositions || defaultPosition;
+        var refinedStartPositions: (object | string | null)[][];
+        if (startPositions) refinedStartPositions = startPositions;
+        else refinedStartPositions = defaultPosition;
         // 2D of pieces
         this.piecesPositionOnBoard = [];
-        for (var i = 0; i < startPositions.length; i++) {
+        for (var i = 0; i < refinedStartPositions.length; i++) {
             // create current column and put to 2D array
-            let colPieces = [];
+            let colPieces: (Piece | null)[] = [];
             this.piecesPositionOnBoard.push(colPieces);
-            for (var j = 0; j < startPositions[i].length; j++) {
+            for (var j = 0; j < refinedStartPositions[i].length; j++) {
                 // check if null
-                if (!startPositions[i][j]) {
+                if (!refinedStartPositions[i][j]) {
                     colPieces.push(null)
                     continue;
                 };
                 // get identifier
-                const pieceChar = startPositions[i][j].toString().charAt(0);
-                var thisPiece = new Piece();
+                const pieceChar = refinedStartPositions ? [i][j].toString().charAt(0) : null // rSP is never null
+                var thisPiece: Piece | null;
                 switch (pieceChar) {
+                    case null:
+                        thisPiece = null;
+                        break;
                     case "C":
-                        var thisPiece = new Xe(true, { x: i, y: j });
+                        thisPiece = new Xe(true, { x: i, y: j });
                         break;
                     case "M":
-                        var thisPiece = new Ma(true, { x: i, y: j });
+                        thisPiece = new Ma(true, { x: i, y: j });
                         break;
                     case "X":
-                        var thisPiece = new Vua(true, { x: i, y: j });
+                        thisPiece = new Vua(true, { x: i, y: j });
                         break;
                     case "S":
-                        var thisPiece = new Si(true, { x: i, y: j });
+                        thisPiece = new Si(true, { x: i, y: j });
                         break;
                     case "J":
-                        var thisPiece = new Tuong(true, { x: i, y: j });
+                        thisPiece = new Tuong(true, { x: i, y: j });
                         break;
                     case "P":
-                        var thisPiece = new Phao(true, { x: i, y: j });
+                        thisPiece = new Phao(true, { x: i, y: j });
                         break;
                     case "Z":
-                        var thisPiece = new Tot(true, { x: i, y: j });
+                        thisPiece = new Tot(true, { x: i, y: j });
                         break;
                     case "c":
-                        var thisPiece = new Xe(false, { x: i, y: j });
+                        thisPiece = new Xe(false, { x: i, y: j });
                         break;
                     case "m":
-                        var thisPiece = new Ma(false, { x: i, y: j });
+                        thisPiece = new Ma(false, { x: i, y: j });
                         break;
                     case "x":
-                        var thisPiece = new Vua(false, { x: i, y: j });
+                        thisPiece = new Vua(false, { x: i, y: j });
                         break;
                     case "s":
-                        var thisPiece = new Si(false, { x: i, y: j });
+                        thisPiece = new Si(false, { x: i, y: j });
                         break;
                     case "j":
-                        var thisPiece = new Tuong(false, { x: i, y: j });
+                        thisPiece = new Tuong(false, { x: i, y: j });
                         break;
                     case "p":
-                        var thisPiece = new Phao(false, { x: i, y: j });
+                        thisPiece = new Phao(false, { x: i, y: j });
                         break;
                     case "z":
-                        var thisPiece = new Tot(false, { x: i, y: j });
+                        thisPiece = new Tot(false, { x: i, y: j });
                         break;
                     default:
                         throw new Error("This piece is not available");
                 }
                 colPieces.push(thisPiece);
-                this.onBoardPieces.push(thisPiece);
+                if (thisPiece) this.onBoardPieces.push(thisPiece);
             }
         }
     }
@@ -98,26 +108,35 @@ export class Board {
      * This method move piece from position to newPosition, remove and return captured piece. 
      * This method DOES NOT validate the move with any play rules.
      */
-    movePiece(position, newPosition) {
+    movePiece(position: { x: number, y: number }, newPosition: { x: number, y: number }) {
         let { x, y } = position;
         let thisPiece = this.piecesPositionOnBoard[x][y];
         if (!thisPiece) throw new Error("There is no piece on old position:" + position);
 
-        let { newX, newY } = newPosition;
+        let { x: newX, y: newY } = newPosition;
         this.piecesPositionOnBoard[x][y] = null;
         let captured = this.piecesPositionOnBoard[newX][newY];
         this.piecesPositionOnBoard[newX][newY] = thisPiece;
-        thisPiece.x = newX; thisPiece.y = newY;
+        thisPiece.position.x = newX; thisPiece.position.y = newY;
 
         if (this.redToPlay) { this.redToPlay = false; } else { this.redToPlay = true; this.turn += 1; }
-        this.onBoardPieces.splice(this.onBoardPieces.findIndex(captured), 1);
+        this.onBoardPieces.splice(this.onBoardPieces.findIndex(x => { x == captured }), 1);
         return { captured: captured, board: this };
 
     }
 }
 
 // ---------------------------GUI---------------------------
-const defaultStyle = {
+export type Style = {
+    width: number,
+    height: number,
+    spaceX: number,
+    spaceY: number,
+    pointStartX: number,
+    pointStartY: number,
+    page: string
+}
+const defaultStyle: Style = {
     width: 325,
     height: 402,
     spaceX: 35,
@@ -128,7 +147,13 @@ const defaultStyle = {
 };
 
 class Background {
-    constructor(context2d, sizeSetting) {
+    public context2d: any;
+    public sizeSetting: Style;
+    public x: number;
+    public y: number;
+    public img: HTMLImageElement;
+
+    constructor(context2d: any, sizeSetting: Style) {
         this.context2d = context2d;
         this.sizeSetting = sizeSetting;
         this.x = 0;
@@ -143,7 +168,16 @@ class Background {
 }
 
 class Pane {
-    constructor(context2d, sizeSetting) {
+    public context2d: any;
+    public sizeSetting: Style;
+    public x: number;
+    public y: number;
+    public newX: number;
+    public newY: number;
+    public img: HTMLImageElement;
+    public isShow: boolean;
+
+    constructor(context2d: any, sizeSetting: Style) {
         this.context2d = context2d;
         this.sizeSetting = sizeSetting;
         this.x = 0;
@@ -157,15 +191,23 @@ class Pane {
 
     show() {
         if (this.isShow) {
-            this.context2d.drawImage(this.img, this.sizeSetting.spaceX * this.x + sizeSetting.pointStartX, sizeSetting.spaceY * this.y + sizeSetting.pointStartY)
-            this.context2d.drawImage(this.img, this.sizeSetting.spaceX * this.newX + sizeSetting.pointStartX, sizeSetting.spaceY * this.newY + sizeSetting.pointStartY)
+            this.context2d.drawImage(this.img, this.sizeSetting.spaceX * this.x + this.sizeSetting.pointStartX, this.sizeSetting.spaceY * this.y + this.sizeSetting.pointStartY)
+            this.context2d.drawImage(this.img, this.sizeSetting.spaceX * this.newX + this.sizeSetting.pointStartX, this.sizeSetting.spaceY * this.newY + this.sizeSetting.pointStartY)
         }
     }
 }
 
 class Dot {
-    constructor(context2d) {
+    public context2d: any;
+    public sizeSetting: Style;
+    public x: number;
+    public y: number;
+    public img: HTMLImageElement;
+    public dots: any; // Todo: check what is dot
+
+    constructor(context2d: any, sizeSetting: Style) {
         this.context2d = context2d;
+        this.sizeSetting = sizeSetting;
         this.x = 0;
         this.y = 0;
         this.img = new Image();
@@ -173,47 +215,58 @@ class Dot {
         this.dots = [];
     }
 
-    show(sizeSetting) {
+    show() {
         for (let i = 0; i < this.dots.length; i++) {
-            this.context2d.drawImage(this.img, sizeSetting.spaceX * this.x + sizeSetting.pointStartX, sizeSetting.spaceY * this.y + sizeSetting.pointStartY);
-
+            this.context2d.drawImage(this.img, this.sizeSetting.spaceX * this.x + this.sizeSetting.pointStartX, this.sizeSetting.spaceY * this.y + this.sizeSetting.pointStartY);
         }
     }
 }
 
-export function addGUI2Board(board, context2dAvailabler, sizeSetting) {
-    if (!board.context2d) {
-        board.context2d = context2dAvailabler.getContext("2d");
-        board.sizeSetting = sizeSetting;
-        board.context2dAvailabler = context2dAvailabler;
+export function addGUI2Board(board: Board, context2dAvailabler: any, sizeSetting: Style) {
+    let thisContext2d = context2dAvailabler.getContext("2d");
+    if (!("context2d" in board)) {
+        Object.assign(board, {
+            context2d: thisContext2d,
+            sizeSetting: sizeSetting,
+            context2dAvailabler: context2dAvailabler
+
+        });
         context2dAvailabler.width = sizeSetting.width;
         context2dAvailabler.height = sizeSetting.height
     }
-    board.bg = board.bg || new Background(board.context2d, sizeSetting);
-    board.pane = board.pane || new Pane(board.context2d, sizeSetting);
-    board.dot = board.dot || new Dot(board.context2d, sizeSetting);
+    if (board.hasOwnProperty("bg")) Object.assign(board, { bg: new Background(thisContext2d, sizeSetting) });
+    if (board.hasOwnProperty("pane")) Object.assign(board, { pane: new Pane(thisContext2d, sizeSetting) });
+    if (board.hasOwnProperty("dot")) Object.assign(board, { dot: new Background(thisContext2d, sizeSetting) });
 }
 export class BoardGUI extends Board {
-    constructor(startPositions, context2dAvailabler, sizeSetting) {
+    public context2d: any;
+    public sizeSetting?: Style;
+    public bg?: Background;
+    public pane?: Pane;
+    public dot?: Dot;
+    public context2dAvailabler: any;
+
+    constructor(startPositions: object[][]|null, context2dAvailabler: HTMLElement, sizeSetting: Style) {
         super(startPositions);
         addGUI2Board(this, context2dAvailabler, sizeSetting || defaultStyle);
     }
 
     show() {
         this.context2d.clearRect(0, 0, 325, 402);
-        this.bg.show();
-        this.pane.show();
-        this.dot.show();
+        if (this.bg) this.bg.show();
+        if (this.pane) this.pane.show();
+        if (this.dot) this.dot.show();
         for (let i = 0; i < this.onBoardPieces.length; i++) {
             this.onBoardPieces[i].show(this.context2d);
         }
 
     }
 
-    getClicked(e) {
+    getClicked(e: MouseEvent) {
+        if (!this.sizeSetting) throw new Error("This object is not init properly, lack sizeSetting");
         let domXY = getDomXY(this.context2dAvailabler);
-        let x = Math.round((e.pageX - domXY.x - com.pointStartX - 20) / com.spaceX)
-        let y = Math.round((e.pageY - domXY.y - com.pointStartY - 20) / com.spaceY)
+        let x = Math.round((e.pageX - domXY.x - this.sizeSetting.pointStartX - 20) / this.sizeSetting.spaceX)
+        let y = Math.round((e.pageY - domXY.y - this.sizeSetting.pointStartY - 20) / this.sizeSetting.spaceY)
 
         return {
             piece: this.piecesPositionOnBoard[x][y],
@@ -225,7 +278,7 @@ export class BoardGUI extends Board {
 // not used here: play.js
 // take the canvas and return its position 
 // + piece's position (on web) => piece's coordinate 
-function getDomXY(dom) {
+function getDomXY(dom: any) {
     var left = dom.offsetLeft;
     var top = dom.offsetTop;
     var current = dom.offsetParent;

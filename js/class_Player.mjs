@@ -12,4 +12,4 @@ class Player {
     }
 }
 
-import {Board} from "./class_Board.mjs"
+import {Board} from "./class_Board.js"

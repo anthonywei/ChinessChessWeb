@@ -1,4 +1,7 @@
+import { Board } from "./class_Board";
+
 // ------------------ Piece ----------------------------
+// Todo: POSITION_VALUES, toString()
 const PROPERTIES = {
     red: {
         Xe: { text: "俥", imgStr: 'r_c' },
@@ -28,9 +31,9 @@ const VALUE = {
     Phao: 50,
     Tot: 10
 }
-let POSITION_VALUES = {}
+let POSITION_VALUES:{[key: string]: [number[], number[], number[], number[], number[], number[], number[], number[], number[]]} = {}
 
-function parseSide(side) {
+function parseSide(side: (boolean| string| number)) {
     let scale = 0;
     if (typeof side === "boolean") {
         if (side) scale = 1; else scale = -1;
@@ -49,7 +52,14 @@ function parseSide(side) {
 }
 
 export class Piece {
-    constructor(scale, position, baseValue) {
+	public scale: number;
+	public position: {x: number, y:number};
+	public baseValue: number;
+	public selected: boolean;
+	public imgStr?: string;
+    public text?:string;
+
+    constructor(scale: number, position: {x: number, y: number}, baseValue: number) {
         this.scale = scale;
         this.position = position;
         this.baseValue = baseValue;
@@ -60,10 +70,10 @@ export class Piece {
         return this.scale * (this.baseValue + this._getPositionValue());
     }
 
-    show(canvas2dcontext) {
+    show(canvas2dcontext: any) {
         canvas2dcontext.save();
         canvas2dcontext.globalAlpha = 1;
-        canvas2dcontext.drawImage(this.getImg(), 35 * this.position[0] + 5, 36 * this.position[1] + 19);
+        canvas2dcontext.drawImage(this.getImg(), 35 * this.position.x + 5, 36 * this.position.y + 19);
         canvas2dcontext.restore();
     }
 
@@ -73,7 +83,7 @@ export class Piece {
         return out;
     }
     
-    click(board) {
+    click(board: Board) {
         this.selected = ! this.selected;
         // Todo: remove all dots 
         if (this.selected) {
@@ -83,12 +93,16 @@ export class Piece {
     }
     
     // ---------------------------abtract methods---------------------------
-    getPosibleMoves(_board) {
+    getPosibleMoves(_board: Board) {
         return [];
     }
     
     _getPositionValue() {
         return 0;
+    }
+
+    toString() {
+        return "";
     }
     
 }
@@ -105,7 +119,8 @@ POSITION_VALUES.Xe = [
     [3, 3, 3, 3, 4, 4, 2, -1, 0, -3]
 ];
 export class Xe extends Piece {
-    constructor(side, position) {
+
+    constructor(side: (boolean| string| number), position: {x: number, y: number}) {
         let scale = parseSide(side);
         super(scale, position, VALUE.Xe);
 
@@ -120,12 +135,16 @@ export class Xe extends Piece {
 
     _getPositionValue() {
         let {x, y} = this.position;
+        if (this.scale < 0) {
+            y = y * this.scale - 1;
+        }
         return POSITION_VALUES.Xe[x][y];
     }
 }
 
 export class Ma extends Piece {
-    constructor(side, position) {
+
+    constructor(side: (boolean| string| number), position: {x: number, y: number}) {
         let scale = parseSide(side);
         super(scale, position, VALUE.Ma);
 
@@ -139,13 +158,17 @@ export class Ma extends Piece {
     }
 
     _getPositionValue() {
-        let [x, y] = this.position;
-        return Ma.positionValue[x][y];
+        let {x, y} = this.position;
+        if (this.scale < 0) {
+            y = y * this.scale - 1;
+        }
+        return POSITION_VALUES.Ma[x][y];
     }
 }
 
 export class Vua extends Piece {
-    constructor(side, position) {
+
+    constructor(side: (boolean| string| number), position: {x: number, y: number}) {
         let scale = parseSide(side);
         super(scale, position, VALUE.Vua);
 
@@ -160,7 +183,8 @@ export class Vua extends Piece {
 }
 
 export class Si extends Piece {
-    constructor(side, position) {
+
+    constructor(side: (boolean| string| number), position: {x: number, y: number}) {
         let scale = parseSide(side);
         super(scale, position, VALUE.Si);
 
@@ -174,13 +198,17 @@ export class Si extends Piece {
     }
 
     _getPositionValue() {
-        let [x, y] = this.position;
-        return Si.positionValue[x][y];
+        let {x, y} = this.position;
+        if (this.scale < 0) {
+            y = y * this.scale - 1;
+        }
+        return POSITION_VALUES.Si[x][y];
     }
 }
 
 export class Tuong extends Piece {
-    constructor(side, position) {
+
+    constructor(side: (boolean| string| number), position: {x: number, y: number}) {
         let scale = parseSide(side);
         super(scale, position, VALUE.Tuong);
 
@@ -194,13 +222,17 @@ export class Tuong extends Piece {
     }
 
     _getPositionValue() {
-        let [x, y] = this.position;
-        return Tuong.positionValue[x][y];
+        let {x, y} = this.position;
+        if (this.scale < 0) {
+            y = y * this.scale - 1;
+        }
+        return POSITION_VALUES.Tuong[x][y];
     }
 }
 
 export class Phao extends Piece {
-    constructor(side, position) {
+
+    constructor(side: (boolean| string| number), position: {x: number, y: number}) {
         let scale = parseSide(side);
         super(scale, position, VALUE.Phao);
 
@@ -214,13 +246,17 @@ export class Phao extends Piece {
     }
 
     _getPositionValue() {
-        let [x, y] = this.position;
-        return Phao.positionValue[x][y];
+        let {x, y} = this.position;
+        if (this.scale < 0) {
+            y = y * this.scale - 1;
+        }
+        return POSITION_VALUES.Phao[x][y];
     }
 }
 
 export class Tot extends Piece {
-    constructor(side, position) {
+
+    constructor(side: (boolean| string| number), position: {x: number, y: number}) {
         let scale = parseSide(side);
         super(scale, position, VALUE.Tot);
 
@@ -234,7 +270,10 @@ export class Tot extends Piece {
     }
 
     _getPositionValue() {
-        let [x, y] = this.position;
-        return Tot.positionValue[x][y];
+        let {x, y} = this.position;
+        if (this.scale < 0) {
+            y = y * this.scale - 1;
+        }
+        return POSITION_VALUES.Tot[x][y];
     }
 }
