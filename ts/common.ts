@@ -66,7 +66,7 @@ window.onload = function () {
 }
 
 // use somewhere
-export function showPane(x: number, y: number, newX: number, newY: number) {
+function showPane(x: number, y: number, newX: number, newY: number) {
     if (board.pane) {
         board.pane.isShow = true;
         board.pane.x = x;
