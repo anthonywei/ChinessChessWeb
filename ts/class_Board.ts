@@ -127,7 +127,7 @@ export class Board {
 }
 
 // ---------------------------GUI---------------------------
-export type Style = {
+export type BoardStyle = {
     width: number,
     height: number,
     spaceX: number,
@@ -136,7 +136,7 @@ export type Style = {
     pointStartY: number,
     page: string
 }
-const defaultStyle: Style = {
+const defaultStyle: BoardStyle = {
     width: 325,
     height: 402,
     spaceX: 35,
@@ -148,12 +148,12 @@ const defaultStyle: Style = {
 
 class Background {
     public context2d: any;
-    public sizeSetting: Style;
+    public sizeSetting: BoardStyle;
     public x: number;
     public y: number;
     public img: HTMLImageElement;
 
-    constructor(context2d: any, sizeSetting: Style) {
+    constructor(context2d: any, sizeSetting: BoardStyle) {
         this.context2d = context2d;
         this.sizeSetting = sizeSetting;
         this.x = 0;
@@ -169,7 +169,7 @@ class Background {
 
 class Pane {
     public context2d: any;
-    public sizeSetting: Style;
+    public sizeSetting: BoardStyle;
     public x: number;
     public y: number;
     public newX: number;
@@ -177,7 +177,7 @@ class Pane {
     public img: HTMLImageElement;
     public isShow: boolean;
 
-    constructor(context2d: any, sizeSetting: Style) {
+    constructor(context2d: any, sizeSetting: BoardStyle) {
         this.context2d = context2d;
         this.sizeSetting = sizeSetting;
         this.x = 0;
@@ -199,13 +199,13 @@ class Pane {
 
 class Dot {
     public context2d: any;
-    public sizeSetting: Style;
+    public sizeSetting: BoardStyle;
     public x: number;
     public y: number;
     public img: HTMLImageElement;
     public dots: any; // Todo: check what is dot
 
-    constructor(context2d: any, sizeSetting: Style) {
+    constructor(context2d: any, sizeSetting: BoardStyle) {
         this.context2d = context2d;
         this.sizeSetting = sizeSetting;
         this.x = 0;
@@ -222,7 +222,7 @@ class Dot {
     }
 }
 
-export function addGUI2Board(board: Board, context2dAvailabler: any, sizeSetting: Style) {
+export function addGUI2Board(board: Board, context2dAvailabler: any, sizeSetting: BoardStyle) {
     let thisContext2d = context2dAvailabler.getContext("2d");
     if (!("context2d" in board)) {
         Object.assign(board, {
@@ -240,13 +240,13 @@ export function addGUI2Board(board: Board, context2dAvailabler: any, sizeSetting
 }
 export class BoardGUI extends Board {
     public context2d: any;
-    public sizeSetting?: Style;
+    public sizeSetting?: BoardStyle;
     public bg?: Background;
     public pane?: Pane;
     public dot?: Dot;
     public context2dAvailabler: any;
 
-    constructor(startPositions: object[][]|null, context2dAvailabler: HTMLElement, sizeSetting: Style) {
+    constructor(startPositions: object[][]|null, context2dAvailabler: HTMLElement, sizeSetting: BoardStyle) {
         super(startPositions);
         addGUI2Board(this, context2dAvailabler, sizeSetting || defaultStyle);
     }

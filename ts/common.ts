@@ -1,7 +1,7 @@
-import { BoardGUI, Style } from "./class_Board.js"
+import { BoardGUI, BoardStyle } from "./class_Board.js"
 
 
-let stype1: Style = {
+let stype1: BoardStyle = {
     width: 325,
     height: 402,
     spaceX: 35,
