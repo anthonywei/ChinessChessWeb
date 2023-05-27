@@ -1,4 +1,4 @@
-import { BoardGUI, Style } from "./class_Board"
+import { BoardGUI, Style } from "./class_Board.js"
 
 
 let stype1: Style = {

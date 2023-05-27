@@ -1,4 +1,4 @@
-import { Board } from "./class_Board";
+import { Board } from "./class_Board.js";
 
 // ------------------ Piece ----------------------------
 // Todo: POSITION_VALUES, toString()

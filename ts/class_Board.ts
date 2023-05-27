@@ -1,4 +1,4 @@
-import { Xe, Ma, Vua, Si, Tuong, Phao, Tot, Piece } from "./class_Piece"
+import { Xe, Ma, Vua, Si, Tuong, Phao, Tot, Piece } from "./class_Piece.js"
 
 
 const defaultPosition = [
