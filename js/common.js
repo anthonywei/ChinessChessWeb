@@ -16,14 +16,13 @@ function get(id) {
 }
 get("box").style.width = stype1.width + 1 + "px";
 let canvas = get("chess");
-var board = new BoardGUI(null, canvas, stype1);
+let board = new BoardGUI(null, canvas, stype1);
 document.getElementsByTagName("body")[0].style.background = "url(img/" + stype1.page + "/bg.jpg)";
 window.onload = function () {
     if (board.pane)
         board.pane.isShow = false;
     if (board.bg)
         board.bg.show();
-    board.show();
     get("bnBox").style.display = "block";
     get("billBn").addEventListener("click", function (e) {
         if (confirm("Do you want to end this play?")) {

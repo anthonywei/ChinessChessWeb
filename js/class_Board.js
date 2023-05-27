@@ -169,28 +169,23 @@ class Dot {
         }
     }
 }
-export function addGUI2Board(board, context2dAvailabler, sizeSetting) {
-    let thisContext2d = context2dAvailabler.getContext("2d");
-    if (!("context2d" in board)) {
-        Object.assign(board, {
-            context2d: thisContext2d,
-            sizeSetting: sizeSetting,
-            context2dAvailabler: context2dAvailabler
-        });
-        context2dAvailabler.width = sizeSetting.width;
-        context2dAvailabler.height = sizeSetting.height;
-    }
-    if (!board.hasOwnProperty("bg"))
-        Object.assign(board, { bg: new Background(thisContext2d, sizeSetting) });
-    if (!board.hasOwnProperty("pane"))
-        Object.assign(board, { pane: new Pane(thisContext2d, sizeSetting) });
-    if (!board.hasOwnProperty("dot"))
-        Object.assign(board, { dot: new Background(thisContext2d, sizeSetting) });
-}
 export class BoardGUI extends Board {
     constructor(startPositions, context2dAvailabler, sizeSetting) {
         super(startPositions);
-        addGUI2Board(this, context2dAvailabler, sizeSetting || defaultStyle);
+        this.context2dAvailabler = context2dAvailabler;
+        let thisContext2d = context2dAvailabler.getContext("2d");
+        this.context2d = thisContext2d;
+        this.sizeSetting = sizeSetting;
+        this.bg = new Background(thisContext2d, sizeSetting);
+        this.pane = new Pane(thisContext2d, sizeSetting);
+        this.dot = new Dot(thisContext2d, sizeSetting);
+        context2dAvailabler.addEventListener("click", (e) => {
+            let { piece, point: { x, y } } = this.getClicked(e);
+            if (piece) {
+            }
+            else {
+            }
+        });
     }
     show() {
         this.context2d.clearRect(0, 0, 325, 402);

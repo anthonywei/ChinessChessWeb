@@ -88,7 +88,7 @@ export class Board {
                         thisPiece = new Tot(false, { x: i, y: j });
                         break;
                     default:
-                        throw new Error("This piece `" + pieceChar +"` at `" + i + j + "` is not available");
+                        throw new Error("This piece `" + pieceChar + "` at `" + i + j + "` is not available");
                 }
                 colPieces.push(thisPiece);
                 if (thisPiece) this.onBoardPieces.push(thisPiece);
@@ -222,33 +222,33 @@ class Dot {
     }
 }
 
-export function addGUI2Board(board: Board, context2dAvailabler: any, sizeSetting: BoardStyle) {
-    let thisContext2d = context2dAvailabler.getContext("2d");
-    if (!("context2d" in board)) {
-        Object.assign(board, {
-            context2d: thisContext2d,
-            sizeSetting: sizeSetting,
-            context2dAvailabler: context2dAvailabler
-
-        });
-        context2dAvailabler.width = sizeSetting.width;
-        context2dAvailabler.height = sizeSetting.height
-    }
-    if (!board.hasOwnProperty("bg")) Object.assign(board, { bg: new Background(thisContext2d, sizeSetting) });
-    if (!board.hasOwnProperty("pane")) Object.assign(board, { pane: new Pane(thisContext2d, sizeSetting) });
-    if (!board.hasOwnProperty("dot")) Object.assign(board, { dot: new Background(thisContext2d, sizeSetting) });
-}
 export class BoardGUI extends Board {
     public context2d: any;
-    public sizeSetting?: BoardStyle;
-    public bg?: Background;
-    public pane?: Pane;
-    public dot?: Dot;
+    public sizeSetting: BoardStyle;
+    public bg: Background;
+    public pane: Pane;
+    public dot: Dot;
     public context2dAvailabler: any;
 
-    constructor(startPositions: object[][]|null, context2dAvailabler: HTMLElement, sizeSetting: BoardStyle) {
+    constructor(startPositions: object[][] | null, context2dAvailabler: any, sizeSetting: BoardStyle) {
         super(startPositions);
-        addGUI2Board(this, context2dAvailabler, sizeSetting || defaultStyle);
+
+        this.context2dAvailabler = context2dAvailabler;
+        let thisContext2d = context2dAvailabler.getContext("2d");
+        this.context2d = thisContext2d;
+        this.sizeSetting = sizeSetting;
+        this.bg = new Background(thisContext2d, sizeSetting);
+        this.pane = new Pane(thisContext2d, sizeSetting);
+        this.dot = new Dot(thisContext2d, sizeSetting);
+
+        context2dAvailabler.addEventListener("click", (e: MouseEvent) => {
+            let { piece, point: { x, y } } = this.getClicked(e);
+            if (piece) {
+                // Todo: Player clicked piece
+            } else {
+                // Todo: Player clicked point 
+            }
+        });
     }
 
     show() {
