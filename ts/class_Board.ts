@@ -1,5 +1,10 @@
-import { Xe, Ma, Vua, Si, Tuong, Phao, Tot, Piece } from "./class_Piece.js"
+import { Xe, Ma, Vua, Si, Tuong, Phao, Tot, Piece, PiecePosition } from "./class_Piece.js"
 
+
+export type Move = {
+    oldPosition: PiecePosition,
+    newPosition: PiecePosition
+}
 
 const defaultPosition = [
     ["C1", null, null, "Z4", null, null, "z4", null, null, "c1",],
@@ -108,12 +113,12 @@ export class Board {
      * This method move piece from position to newPosition, remove and return captured piece. 
      * This method DOES NOT validate the move with any play rules.
      */
-    movePiece(position: { x: number, y: number }, newPosition: { x: number, y: number }) {
-        let { x, y } = position;
+    movePiece(move: Move) {
+        let { x, y } = move.oldPosition;
         let thisPiece = this.piecesPositionOnBoard[x][y];
-        if (!thisPiece) throw new Error("There is no piece on old position:" + position);
+        if (!thisPiece) throw new Error("There is no piece on old position:" + move.oldPosition);
 
-        let { x: newX, y: newY } = newPosition;
+        let { x: newX, y: newY } = move.newPosition;
         this.piecesPositionOnBoard[x][y] = null;
         let captured = this.piecesPositionOnBoard[newX][newY];
         this.piecesPositionOnBoard[newX][newY] = thisPiece;
@@ -236,7 +241,7 @@ export class BoardGUI extends Board {
         this.context2dAvailabler = context2dAvailabler;
         let thisContext2d = context2dAvailabler.getContext("2d");
         this.context2d = thisContext2d;
-        this.sizeSetting = sizeSetting;
+        this.sizeSetting = sizeSetting || defaultStyle;
         this.bg = new Background(thisContext2d, sizeSetting);
         this.pane = new Pane(thisContext2d, sizeSetting);
         this.dot = new Dot(thisContext2d, sizeSetting);
