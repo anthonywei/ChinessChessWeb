@@ -90,12 +90,12 @@ export class Board {
         });
         return point;
     }
-    movePiece(position, newPosition) {
-        let { x, y } = position;
+    movePiece(move) {
+        let { x, y } = move.oldPosition;
         let thisPiece = this.piecesPositionOnBoard[x][y];
         if (!thisPiece)
-            throw new Error("There is no piece on old position:" + position);
-        let { x: newX, y: newY } = newPosition;
+            throw new Error("There is no piece on old position:" + move.oldPosition);
+        let { x: newX, y: newY } = move.newPosition;
         this.piecesPositionOnBoard[x][y] = null;
         let captured = this.piecesPositionOnBoard[newX][newY];
         this.piecesPositionOnBoard[newX][newY] = thisPiece;
@@ -175,7 +175,7 @@ export class BoardGUI extends Board {
         this.context2dAvailabler = context2dAvailabler;
         let thisContext2d = context2dAvailabler.getContext("2d");
         this.context2d = thisContext2d;
-        this.sizeSetting = sizeSetting;
+        this.sizeSetting = sizeSetting || defaultStyle;
         this.bg = new Background(thisContext2d, sizeSetting);
         this.pane = new Pane(thisContext2d, sizeSetting);
         this.dot = new Dot(thisContext2d, sizeSetting);

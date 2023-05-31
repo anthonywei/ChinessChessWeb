@@ -1,5 +1,5 @@
-import { Xe, Ma, Vua, Si, Tuong, Phao, Tot, Piece, PiecePosition } from "./class_Piece.js"
-
+import { Xe, Ma, Vua, Si, Tuong, Phao, Tot, Piece } from "./class_Piece.js"
+import type { PiecePosition } from "./class_Piece.js";
 
 export type Move = {
     oldPosition: PiecePosition,

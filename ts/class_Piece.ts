@@ -51,15 +51,20 @@ function parseSide(isRedPiece: (boolean| string| number)) {
     return scale;
 }
 
+export type PiecePosition = {
+    x: number,
+    y: number
+}
+
 export class Piece {
 	public scale: number;
-	public position: {x: number, y:number};
+	public position: PiecePosition;
 	public baseValue: number;
 	public selected: boolean;
 	public imgStr?: string;
     public text?:string;
 
-    constructor(scale: number, position: {x: number, y: number}, baseValue: number) {
+    constructor(scale: number, position: PiecePosition, baseValue: number) {
         this.scale = scale;
         this.position = position;
         this.baseValue = baseValue;
@@ -120,7 +125,7 @@ POSITION_VALUES.Xe = [
 ];
 export class Xe extends Piece {
 
-    constructor(isRedPiece: (boolean| string| number), position: {x: number, y: number}) {
+    constructor(isRedPiece: (boolean| string| number), position: PiecePosition) {
         let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Xe);
 
@@ -144,7 +149,7 @@ export class Xe extends Piece {
 
 export class Ma extends Piece {
 
-    constructor(isRedPiece: (boolean| string| number), position: {x: number, y: number}) {
+    constructor(isRedPiece: (boolean| string| number), position: PiecePosition) {
         let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Ma);
 
@@ -168,7 +173,7 @@ export class Ma extends Piece {
 
 export class Vua extends Piece {
 
-    constructor(isRedPiece: (boolean| string| number), position: {x: number, y: number}) {
+    constructor(isRedPiece: (boolean| string| number), position: PiecePosition) {
         let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Vua);
 
@@ -184,7 +189,7 @@ export class Vua extends Piece {
 
 export class Si extends Piece {
 
-    constructor(isRedPiece: (boolean| string| number), position: {x: number, y: number}) {
+    constructor(isRedPiece: (boolean| string| number), position: PiecePosition) {
         let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Si);
 
@@ -208,7 +213,7 @@ export class Si extends Piece {
 
 export class Tuong extends Piece {
 
-    constructor(isRedPiece: (boolean| string| number), position: {x: number, y: number}) {
+    constructor(isRedPiece: (boolean| string| number), position: PiecePosition) {
         let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Tuong);
 
@@ -232,7 +237,7 @@ export class Tuong extends Piece {
 
 export class Phao extends Piece {
 
-    constructor(isRedPiece: (boolean| string| number), position: {x: number, y: number}) {
+    constructor(isRedPiece: (boolean| string| number), position: PiecePosition) {
         let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Phao);
 
@@ -256,7 +261,7 @@ export class Phao extends Piece {
 
 export class Tot extends Piece {
 
-    constructor(isRedPiece: (boolean| string| number), position: {x: number, y: number}) {
+    constructor(isRedPiece: (boolean| string| number), position: PiecePosition) {
         let scale = parseSide(isRedPiece);
         super(scale, position, VALUE.Tot);
 
