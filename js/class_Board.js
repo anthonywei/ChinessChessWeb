@@ -91,6 +91,9 @@ export class Board {
         return point;
     }
     movePiece(move) {
+        return this._movePiece(move);
+    }
+    _movePiece(move) {
         let { x, y } = move.oldPosition;
         let thisPiece = this.piecesPositionOnBoard[x][y];
         if (!thisPiece)

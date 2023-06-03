@@ -110,10 +110,21 @@ export class Board {
     }
 
     /**
-     * This method move piece from position to newPosition, remove and return captured piece. 
+     * This method create a new board that piece from position is moved to newPosition, remove and return captured piece. 
+     * Current board MAY NOT CHANGED.
      * This method DOES NOT validate the move with any play rules.
+     * return captured piece and board after this move
      */
-    movePiece(move: Move) {
+    movePiece(move: Move): { captured: Piece | null | undefined, board: Board } {
+        return this._movePiece(move);
+    }
+
+    /**
+     * Actually move a piece on board 
+     * @param move 
+     * @returns 
+     */
+    _movePiece(move: Move) {
         let { x, y } = move.oldPosition;
         let thisPiece = this.piecesPositionOnBoard[x][y];
         if (!thisPiece) throw new Error("There is no piece on old position:" + move.oldPosition);
